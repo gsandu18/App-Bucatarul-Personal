@@ -816,6 +816,23 @@ document.getElementById('year')?.append(new Date().getFullYear());
 /* ---------- INIT ---------- */
 updateAuthUI();
 showRoute('home');
+  // Fallback imagine pentru chefii fără foto (sau link greșit)
+(function(){
+  const fallbackSVG = encodeURIComponent(`
+    <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 300'>
+      <rect width='100%' height='100%' fill='#f3f6f5'/>
+      <circle cx='200' cy='120' r='60' fill='#d9e2de'/>
+      <rect x='80' y='210' width='240' height='70' rx='12' fill='#d9e2de'/>
+      <text x='200' y='295' text-anchor='middle' font-size='16' fill='#7b8f88'>Foto indisponibilă</text>
+    </svg>`);
+  document.querySelectorAll('.chef .pic img').forEach(img=>{
+    img.addEventListener('error', ()=>{
+      img.src = `data:image/svg+xml;utf8,${fallbackSVG}`;
+      img.style.objectFit = 'contain';
+      img.style.background = '#f3f6f5';
+    }, { once:true });
+  });
+})();
 </script>
 </body>
 </html>
