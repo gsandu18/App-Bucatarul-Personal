@@ -579,7 +579,8 @@ $$('.sidebar .tab').forEach(t=>t.onclick=()=>setPanel(t.dataset.panel));
 
 /* ---------- AUTH UI ---------- */
 function updateAuthUI(){
-  $('#roleBadge') && ( $('#roleBadge').textContent = 'Rol: ' + (state.user?.role || '-') );
+  $('#roleBadge') && ($('#roleBadge').textContent = 'Rol: ' + (state.user?.role || '-'));
+  toggleHeaderButtons(); 
   // Buton Dashboard doar pentru CHEF în header
   const actions = document.querySelector('.header .actions');
   const id='hdrDashBtn'; const exists=document.getElementById(id);
@@ -614,17 +615,6 @@ $('#signupForm')?.addEventListener('submit', e=>{
   state.user=nu; localStorage.setItem('bp_user',JSON.stringify(nu));
   updateAuthUI(); showRoute('dashboard');
 });
-  function updateAuthUI(){
-  $('#roleBadge') && ($('#roleBadge').textContent = 'Rol: ' + (state.user?.role || '-'));
-  toggleHeaderButtons();                            // <— nou
-}
-
-function logout(){
-  state.user = null;
-  localStorage.removeItem('bp_user');
-  showRoute('home');
-  updateAuthUI();                                   // va ascunde logout
-}
 
 /* ---------- QUICK ORDER ---------- */
 $('#quickOrderForm')?.addEventListener('submit', e=>{
