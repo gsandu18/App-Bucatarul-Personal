@@ -868,6 +868,8 @@ label, legend{ color:var(--green) }
 </nav>
 
 <script>
+  const initial = 'light'; // în loc de saved/prefer
+document.documentElement.setAttribute('data-theme', initial);
 const $=(s,c=document)=>c.querySelector(s), $$=(s,c=document)=>[...c.querySelectorAll(s)];
 const routes={home:'#home',auth:'#auth',dashboard:'#dashboard',profile:'#profile'};
 const panels={orders:'#panel-orders',menus:'#panel-menus',chat:'#panel-chat',calendar:'#panel-calendar',settings:'#panel-settings'};
