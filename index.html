@@ -719,6 +719,40 @@ $('#profileForm')?.addEventListener('submit', e=>{
   localStorage.setItem('bp_user',JSON.stringify(state.user)); updateAuthUI(); renderProfile(); alert('Profil actualizat');
 });
 
+  function logout(){
+  state.user = null;
+  localStorage.removeItem('bp_user');
+  updateAuthUI();
+  showRoute('home');
+  alert('Ai fost deconectat.');
+}
+
+// arată/ascunde butoanele + Dashboard în funcție de logare
+function updateAuthUI(){
+  const badge = $('#roleBadge'); if(badge) badge.textContent = 'Rol: ' + (state.user?.role || '-');
+
+  // buton Deconectare
+  const lb = $('#logoutBtn'); const lbp = $('#logoutBtnProfile');
+  if(lb){ lb.style.display = state.user ? '' : 'none'; lb.onclick = logout; }
+  if(lbp){ lbp.onclick = logout; }
+
+  // Dashboard numai pentru CHEF
+  const actions = document.querySelector('.header .actions');
+  const id = 'hdrDashBtn';
+  const exists = document.getElementById(id);
+  if(state.user?.role === 'chef'){
+    if(!exists){
+      const b = document.createElement('button');
+      b.id = id; b.className = 'btn gold'; b.textContent = 'Dashboard';
+      b.onclick = ()=>{ showRoute('dashboard'); setPanel('orders'); };
+      actions.appendChild(b);
+    }
+  }else{
+    exists && exists.remove();
+  }
+}
+  
+
 /* ---------- SIDE EFFECTS ---------- */
 $$('.sidebar .tab').forEach(b=>b.addEventListener('click',()=>$$('.tablink').forEach(t=>t.classList.toggle('active', t.dataset.go==='dashboard'))));
 document.getElementById('year')?.append(new Date().getFullYear());
