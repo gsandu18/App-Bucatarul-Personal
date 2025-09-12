@@ -121,16 +121,35 @@ input:focus,select:focus,textarea:focus{outline:2px solid #e2efe8;border-color:#
 .quote .stars{margin-bottom:6px}
 
 /* DASHBOARD AREA */
-.stack-md{display:grid;grid-template-columns:260px 1fr;gap:18px}
-.side-nav{display:grid;gap:8px}
-.side-nav button{padding:10px;border-radius:12px;border:1px solid var(--line);background:#fff;text-align:left;cursor:pointer}
-.side-nav button.active{border-color:var(--verde);color:var(--verde)}
-.panel{display:none}.panel.show{display:block}
-.list{display:grid;gap:10px}
-.list .item{background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px;display:grid;gap:6px}
-.chat{display:grid;gap:10px}
-.chat-messages{height:260px;overflow:auto;border:1px solid var(--line);background:#fff;border-radius:12px;padding:12px;display:grid;gap:8px}
-.chat-bubble{padding:10px;border-radius:12px;background:#eef6f2}
+/* Cardurile mari */
+.stack-md .card {
+  border-radius: 20px;
+  box-shadow: 0 14px 35px rgba(0,0,0,.06);
+}
+
+/* Meniul lateral: spațiere mai bună */
+.side-nav button {
+  padding: 14px 16px;
+  font-size: 16px;
+}
+
+/* Lista de comenzi */
+#ordersList .item {
+  border-radius: 18px;
+  box-shadow: 0 6px 20px rgba(0,0,0,.05);
+  padding: 18px;
+}
+
+/* Badge status „nou” */
+.badge {
+  background: var(--verde);
+  color: #fff;
+  padding: 6px 14px;
+  border-radius: 30px;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: .2px;
+}
 
 /* FOOTER */
 .site-footer{border-top:1px solid var(--line);margin-top:40px}
@@ -153,6 +172,25 @@ input:focus,select:focus,textarea:focus{outline:2px solid #e2efe8;border-color:#
 @media (max-width: 580px){
   .steps{grid-template-columns:1fr}
   .grid, .testis{grid-template-columns:1fr}
+}
+  #newOrderBtn {
+  position: fixed;
+  bottom: 80px;      /* distanță de jos */
+  right: 24px;       /* distanță de dreapta */
+  border-radius: 50px;
+  padding: 14px 20px;
+  background: var(--verde);
+  color: #fff;
+  font-size: 16px;
+  box-shadow: 0 8px 24px rgba(0,0,0,.2);
+  z-index: 999;
+}
+  body {
+  font-size: 16px;
+  line-height: 1.5;
+}
+.stack-md {
+  gap: 24px;
 }
 </style>
 </head>
