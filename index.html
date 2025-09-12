@@ -312,6 +312,22 @@ input:invalid,textarea:invalid,select:invalid{border-color:var(--green) !importa
   .grid.chefs{grid-template-columns:1fr}
   .chef .pic{height:220px}
 }
+  /* Imaginile chef – să nu se mai suprapună niciodată */
+.chef .pic{ aspect-ratio: 16/9; border-radius:14px; overflow:hidden }
+.chef .pic img{ width:100%; height:100%; object-fit:cover; display:block }
+
+/* Grila chefi: 3 -> 2 -> 1 coloană */
+.grid.chefs{ grid-template-columns:repeat(3,1fr); gap:12px }
+@media (max-width:960px){ .grid.chefs{ grid-template-columns:repeat(2,1fr) } }
+@media (max-width:640px){
+  /* pe telefon: o SINGURĂ coloană, carduri mari, aerisite */
+  .grid.chefs{ grid-template-columns:1fr }
+  .chef .pic{ aspect-ratio: 4/3 } /* puțin mai înalt pe mobil */
+}
+
+/* Mic polish la meta */
+.chef .meta{ margin-top:6px }
+.chef .sub{ margin-top:2px }
  
 </style>
 </head>
