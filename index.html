@@ -47,6 +47,7 @@ input,select,textarea{
   background:linear-gradient(180deg, color-mix(in srgb,var(--bg) 88%, #000 12%), color-mix(in srgb,var(--bg) 96%, #000 4%));
   border-top:1px solid color-mix(in srgb, var(--line) 85%, #000 15%);
 }
+  
 /* Header minimalist */
 .header{position:sticky;top:0;z-index:50;background:rgba(16,19,22,.75);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
 .header .wrap{display:flex;align-items:center;justify-content:space-between;padding:12px 0}
@@ -121,7 +122,10 @@ img{max-width:100%;height:auto;display:block}
 .chef .pic img{width:100%;height:100%;object-fit:cover}
 .chef .meta{display:flex;align-items:center;justify-content:space-between}
 .stars{color:#f5cc4b}
-
+.chef .sub{
+  color:#5b6d66; font-size:14px; margin-top:4px;
+}
+[data-theme="dark"] .chef .sub{ color:#a9b8b2 }
 /* Dashboard */
 .stack{display:grid;grid-template-columns:280px 1fr;gap:16px}
 .sidebar .tab{width:100%;text-align:left;background:transparent;border:1px solid var(--line);padding:12px;border-radius:14px;color:#d7e0e6;cursor:pointer;margin-bottom:8px;transition:background-color .12s ease,border-color .12s ease}
@@ -146,6 +150,8 @@ img{max-width:100%;height:auto;display:block}
   display:grid; grid-template-columns:repeat(5,1fr);
   z-index:80; box-shadow:0 -12px 30px rgba(0,0,0,.35);
 }
+  .tabbar .ico{ width:22px; height:22px; display:block }
+.tabbar .ico svg{ width:100%; height:100%; display:block; fill:currentColor }
 .tabbar button{
   background:transparent; border:0; color:#cfd8dc;
   font-size:13px; display:grid; place-items:center; gap:6px;
@@ -587,6 +593,13 @@ label, legend{ color:var(--green) }
 }
 
 /* Formular: deja alb + verde rubin (din patch-ul anterior) */
+.legal{
+  margin:18px auto 110px; padding:16px;
+  color:#6a7a74; font-size:13px; line-height:1.5;
+  background:var(--card); border:1px solid var(--line); border-radius:14px;
+}
+.legal a{ color:var(--green); text-decoration:none; }
+.legal a:hover{ text-decoration:underline; }
 </style>
 </head>
 <body>
@@ -722,29 +735,28 @@ label, legend{ color:var(--green) }
   </div>
 </section>
     <div class="card">
-      <h3>Chefii noștri</h3>
-      <div class="grid">
-        <div class="chef">
-          <div class="pic">
-            <img src="https://images.unsplash.com/photo-1549029335-5a6cbf0f6d49?auto=format&fit=crop&w=1200&q=60" alt="" loading="lazy" decoding="async">
-          </div>
-          <div class="meta"><strong>Andrei · Milano</strong><span class="stars">★★★★★</span></div>
-        </div>
-        <div class="chef">
-          <div class="pic">
-            <img src="https://images.unsplash.com/photo-1542843137-8791a6904d14?auto=format&fit=crop&w=1200&q=60" alt="" loading="lazy" decoding="async">
-          </div>
-          <div class="meta"><strong>Bianca · Roma</strong><span class="stars">★★★★★</span></div>
-        </div>
-        <div class="chef">
-          <div class="pic">
-            <img src="https://images.unsplash.com/photo-1524041255072-7da0525d6b34?auto=format&fit=crop&w=1200&q=60" alt="" loading="lazy" decoding="async">
-          </div>
-          <div class="meta"><strong>Marco · Firenze</strong><span class="stars">★★★★☆</span></div>
-        </div>
-      </div>
+  <h3>Chefii noștri</h3>
+  <div class="grid">
+    <div class="chef">
+      <div class="pic"><img src="https://images.unsplash.com/photo-1549029335-5a6cbf0f6d49?auto=format&fit=crop&w=1200&q=60" alt="" loading="lazy"></div>
+      <div class="meta"><strong>Andrei · Milano</strong><span class="stars">★★★★★</span></div>
+      <div class="sub">Bucătărie: italiană modernă · <strong>124</strong> evenimente</div>
     </div>
-  </section>
+
+    <div class="chef">
+      <div class="pic"><img src="https://images.unsplash.com/photo-1542843137-8791a6904d14?auto=format&fit=crop&w=1200&q=60" alt="" loading="lazy"></div>
+      <div class="meta"><strong>Bianca · Roma</strong><span class="stars">★★★★★</span></div>
+      <div class="sub">Bucătărie: patiserie & deserturi · <strong>98</strong> evenimente</div>
+    </div>
+
+    <div class="chef">
+      <div class="pic"><img src="https://images.unsplash.com/photo-1524041255072-7da0525d6b34?auto=format&fit=crop&w=1200&q=60" alt="" loading="lazy"></div>
+      <div class="meta"><strong>Marco · Firenze</strong><span class="stars">★★★★☆</span></div>
+      <div class="sub">Bucătărie: toscană & grill · <strong>76</strong> evenimente</div>
+    </div>
+  </div>
+</div>
+</section>
 
   <!-- AUTH -->
   <section class="route" id="auth">
@@ -774,99 +786,7 @@ label, legend{ color:var(--green) }
       </div>
       <p style="color:var(--muted);font-size:13px;margin-top:8px">Demo: stochează datele local (LocalStorage).</p>
     </div>
-  </section>
-
-  <!-- DASHBOARD -->
-  <section class="route" id="dashboard">
-    <div class="stack">
-      <aside class="card sidebar">
-        <button class="tab active" data-panel="orders">Comenzi</button>
-        <button class="tab" data-panel="menus">Meniurile mele</button>
-        <button class="tab" data-panel="chat">Chat</button>
-        <button class="tab" data-panel="calendar">Calendar</button>
-        <button class="tab" data-panel="settings">Setări</button>
-        <div style="margin-top:10px" id="roleBadge" class="badge">Rol: -</div>
-      </aside>
-
-      <section class="card">
-        <!-- ORDERS -->
-        <div class="panel show" id="panel-orders">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;gap:8px;flex-wrap:wrap">
-            <h3 style="margin:0">Comenzi</h3>
-            <button id="newOrderBtn" class="btn gold">+ Cerere nouă</button>
-          </div>
-          <div id="ordersList" class="list"></div>
-        </div>
-
-        <!-- MENUS -->
-        <div class="panel" id="panel-menus">
-          <h3>Meniurile mele</h3>
-          <form id="menuForm" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">
-            <input id="menuTitle" placeholder="Titlu" required>
-            <input id="menuPrice" type="number" placeholder="Preț RON" required>
-            <input id="menuImageUrl" type="url" placeholder="URL imagine (opțional)">
-            <button class="btn primary" type="submit">Salvează</button>
-          </form>
-          <div id="menusList" class="grid"></div>
-        </div>
-
-        <!-- CHAT -->
-        <div class="panel" id="panel-chat">
-          <h3>Chat</h3>
-          <div id="chatMessages" class="card" style="height:260px;overflow:auto"></div>
-          <form id="chatForm" style="display:flex;gap:8px;margin-top:10px">
-            <input id="chatInput" placeholder="Mesaj...">
-            <button class="btn primary">Trimite</button>
-          </form>
-        </div>
-
-        <!-- CALENDAR -->
-        <div class="panel" id="panel-calendar">
-          <h3>Calendar</h3>
-          <form id="eventForm" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px">
-            <input type="date" id="eventDate" required>
-            <input type="time" id="eventTime" required>
-            <input id="eventTitle" placeholder="Titlu" required>
-            <button class="btn primary">Adaugă</button>
-          </form>
-          <ul id="eventsList" class="list"></ul>
-        </div>
-
-        <!-- SETTINGS -->
-        <div class="panel" id="panel-settings">
-          <h3>Setări profil</h3>
-          <form id="profileForm" class="grid" style="grid-template-columns:repeat(2,1fr);gap:10px">
-            <label>Nume <input id="profileName" required></label>
-            <label>Oraș <input id="profileCity"></label>
-            <label>Telefon <input id="profilePhone"></label>
-            <label>Rol
-              <select id="profileRole"><option value="client">Client</option><option value="chef">Bucătar</option></select>
-            </label>
-            <div style="grid-column:1/-1"><button class="btn gold">Actualizează</button></div>
-          </form>
-        </div>
-      </section>
-    </div>
-  </section>
-
-  <!-- PROFILE -->
-  <section class="route" id="profile">
-    <div class="card">
-      <h3>Profil</h3>
-      <div id="profileCard"></div>
-    </div>
-  </section>
-</main>
-
-<!-- Bottom Tabbar -->
-<nav class="tabbar" role="tablist" aria-label="Navigare principală">
-  <button class="tablink active" data-go="home"><div class="emoji">🏠</div>Acasă</button>
-  <button class="tablink" data-go="dashboard" data-panel="orders"><div class="emoji">🧾</div>Comenzi</button>
-  <button class="tablink" data-go="dashboard" data-panel="menus"><div class="emoji">🍽️</div>Meniuri</button>
-  <button class="tablink" data-go="dashboard" data-panel="chat"><div class="emoji">💬</div>Chat</button>
-  <button class="tablink" data-go="profile"><div class="emoji">👤</div>Profil</button>
-</nav>
-
+  </section
 <script>
   const initial = 'light'; // în loc de saved/prefer
 document.documentElement.setAttribute('data-theme', initial);
@@ -903,31 +823,23 @@ $$('.sidebar .tab').forEach(t=>t.onclick=()=>setPanel(t.dataset.panel));
 
 /* Auth small UI */
 function updateAuthUI(){
-  $('#roleBadge') && ( $('#roleBadge').textContent = 'Rol: ' + (state.user?.role || '-') );
+  const badge = $('#roleBadge'); if(badge) badge.textContent = 'Rol: ' + (state.user?.role || '-');
+
+  // buton Dashboard doar pentru CHEF
+  const actions = document.querySelector('.header .actions');
+  const id = 'hdrDashBtn';
+  const exists = document.getElementById(id);
+  if(state.user?.role === 'chef'){
+    if(!exists){
+      const b = document.createElement('button');
+      b.id = id; b.className = 'btn gold'; b.textContent = 'Dashboard';
+      b.onclick = ()=>{ showRoute('dashboard'); setPanel('orders'); };
+      actions.appendChild(b);
+    }
+  }else{
+    exists && exists.remove();
+  }
 }
-$('#tabLoginBtn').onclick=()=>{ $('#tabLogin').style.display='block'; $('#tabSignup').style.display='none'; };
-$('#tabSignupBtn').onclick=()=>{ $('#tabLogin').style.display='none'; $('#tabSignup').style.display='block'; };
-
-$('#loginForm')?.addEventListener('submit', e=>{
-  e.preventDefault();
-  const {email,password}=Object.fromEntries(new FormData(e.target).entries());
-  const users=JSON.parse(localStorage.getItem('bp_users')||'[]');
-  const u=users.find(x=>x.email===email&&x.password===password);
-  if(!u) return alert('Date invalide');
-  state.user=u; localStorage.setItem('bp_user',JSON.stringify(u));
-  updateAuthUI(); showRoute('dashboard');
-});
-$('#signupForm')?.addEventListener('submit', e=>{
-  e.preventDefault();
-  const d=Object.fromEntries(new FormData(e.target).entries());
-  const users=JSON.parse(localStorage.getItem('bp_users')||'[]');
-  if(users.some(u=>u.email===d.email)) return alert('Email existent');
-  const nu={id:'u_'+Date.now(), name:d.name, email:d.email, password:d.password, role:d.role, city:'', phone:''};
-  users.push(nu); localStorage.setItem('bp_users',JSON.stringify(users));
-  state.user=nu; localStorage.setItem('bp_user',JSON.stringify(nu));
-  updateAuthUI(); showRoute('dashboard');
-});
-
 /* Quick order (home) */
 $('#quickOrderForm')?.addEventListener('submit', e=>{
   e.preventDefault();
