@@ -326,6 +326,11 @@ input:invalid,textarea:invalid,select:invalid{border-color:var(--green) !importa
           <label>Email <input type="email" name="email" required></label>
           <label>Parolă <input type="password" name="password" required></label>
           <button class="btn primary" type="submit">Autentificare</button>
+          <div class="actions">
+  <button class="btn theme-toggle" id="themeBtn"><span id="themeIcon">☀️</span><span id="themeLabel">Light</span></button>
+  <button class="btn outline" data-route="auth">Autentificare</button>
+  <button class="btn outline" id="logoutBtn" style="display:none">Deconectare</button>
+</div>
         </form>
       </div>
       <div id="tabSignup" style="display:none">
