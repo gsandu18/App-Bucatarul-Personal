@@ -469,29 +469,6 @@ input:invalid,textarea:invalid,select:invalid{border-color:var(--green) !importa
   </button>
 </nav>
 
-<script>
-  <script>
-(function(){
-  const grid = document.getElementById('testiGrid');
-  const prev = document.getElementById('tPrev');
-  const next = document.getElementById('tNext');
-  if(!grid || !prev || !next) return;
-
-  function step(dir){
-    const w = grid.getBoundingClientRect().width;
-    grid.scrollBy({ left: dir * (w * 0.85), behavior:'smooth' });
-  }
-  prev.addEventListener('click', ()=>step(-1));
-  next.addEventListener('click', ()=>step(1));
-
-  // dezactivăm butoanele când nu e overflow (desktop)
-  const ro = new ResizeObserver(()=>{
-    const canScroll = grid.scrollWidth > grid.clientWidth + 8;
-    prev.disabled = next.disabled = !canScroll;
-  });
-  ro.observe(grid);
-})();
-</script>
 /* ---------- THEME INIT + TOGGLE ---------- */
 (function(){
   const saved = localStorage.getItem('bp_theme');
@@ -693,7 +670,27 @@ $('#profileForm')?.addEventListener('submit', e=>{
 /* ---------- SIDE EFFECTS ---------- */
 $$('.sidebar .tab').forEach(b=>b.addEventListener('click',()=>$$('.tablink').forEach(t=>t.classList.toggle('active', t.dataset.go==='dashboard'))));
 document.getElementById('year')?.append(new Date().getFullYear());
+(function(){
+  const grid = document.getElementById('testiGrid');
+  const prev = document.getElementById('tPrev');
+  const next = document.getElementById('tNext');
+  if(!grid || !prev || !next) return;
 
+  function step(dir){
+    const w = grid.getBoundingClientRect().width;
+    grid.scrollBy({ left: dir * (w * 0.85), behavior:'smooth' });
+  }
+  prev.addEventListener('click', ()=>step(-1));
+  next.addEventListener('click', ()=>step(1));
+
+  // dezactivăm butoanele când nu e overflow (desktop)
+  const ro = new ResizeObserver(()=>{
+    const canScroll = grid.scrollWidth > grid.clientWidth + 8;
+    prev.disabled = next.disabled = !canScroll;
+  });
+  ro.observe(grid);
+})();
+</script>
 /* ---------- INIT ---------- */
 updateAuthUI();
 showRoute('home');
