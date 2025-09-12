@@ -202,6 +202,31 @@ img{max-width:100%;height:auto;display:block}
 .testi-grid{ display:grid; gap:12px; grid-template-columns:repeat(3,1fr) }
 @media (max-width:960px){ .testi-grid{ grid-template-columns:1fr 1fr } }
 @media (max-width:640px){ .testi-grid{ grid-template-columns:1fr } }
+/* ======= CORECTIONS LIGHT THEME ======= */
+[data-theme="light"] .brand h1,
+[data-theme="light"] .brand small{
+  color:var(--ink);
+  text-shadow:none;
+}
+
+[data-theme="light"] .logo{
+  background:conic-gradient(from 210deg,var(--gold),#f6e7b2,var(--gold));
+  color:#000;
+}
+
+[data-theme="light"] .btn.outline{
+  border:1px solid color-mix(in srgb, var(--green) 45%, #000 10%);
+  color:var(--ink);
+  background:rgba(255,255,255,.4);
+}
+[data-theme="light"] .btn.outline:hover{
+  background:rgba(255,255,255,.7);
+}
+
+[data-theme="light"] .btn.gold{
+  background:var(--gold);
+  color:#000;
+}
 </style>
 </head>
 <body>
