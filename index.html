@@ -183,6 +183,30 @@ input:invalid,textarea:invalid,select:invalid{border-color:var(--green) !importa
   .grid{grid-template-columns:1fr}
   .scroller{grid-auto-columns:90%}
 }
+  /* --- Testimonials --- */
+.testimonials.card{ padding:18px }
+.testi-head{ display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:10px }
+.testi-grid{ display:grid; gap:12px; grid-template-columns:repeat(3,1fr) }
+.testi{ background:var(--card); border:1px solid var(--line); border-radius:16px; padding:14px; display:grid; gap:8px }
+.testi .stars{ color:#f5cc4b; letter-spacing:.5px; font-size:16px }
+.testi .txt{ color:var(--ink) }
+.testi .who{ color:var(--muted); font-size:14px }
+.testi .tag{ display:inline-block; background:#0c1610; border:1px solid #264733; color:#baf5d0;
+  border-radius:999px; padding:4px 10px; font-size:12px }
+
+/* slider pe mobile */
+@media (max-width:960px){ .testi-grid{ grid-template-columns:1fr 1fr } }
+@media (max-width:640px){
+  .testi-grid{ display:grid; grid-auto-flow:column; grid-auto-columns:85%; overflow:auto; scroll-snap-type:x mandatory; }
+  .testi{ scroll-snap-align:center }
+  .testi-grid::-webkit-scrollbar{ height:6px }
+  .testi-grid::-webkit-scrollbar-thumb{ background:#1b2227; border-radius:8px }
+}
+
+/* butoane slider (opțional) */
+.testi-nav{ display:flex; gap:8px }
+.testi-btn{ border:1px solid var(--line); background:transparent; color:var(--ink); border-radius:10px; padding:8px 10px; cursor:pointer }
+.testi-btn:disabled{ opacity:.4; cursor:not-allowed }
 </style>
 </head>
 <body>
@@ -252,6 +276,38 @@ input:invalid,textarea:invalid,select:invalid{border-color:var(--green) !importa
         <div class="snap"><img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=1400&q=70" alt="" loading="lazy" decoding="async"></div>
       </div>
     </div>
+    <section class="card testimonials" aria-labelledby="testiTitle">
+  <div class="testi-head">
+    <h3 id="testiTitle" style="margin:0">Ce spun clienții noștri</h3>
+    <div class="testi-nav">
+      <button class="testi-btn" id="tPrev" aria-label="Înapoi">◀</button>
+      <button class="testi-btn" id="tNext" aria-label="Înainte">▶</button>
+    </div>
+  </div>
+
+  <div class="testi-grid" id="testiGrid">
+    <article class="testi">
+      <div class="stars">★★★★★</div>
+      <p class="txt">„Experiență impecabilă! Chef-ul a respectat toate preferințele și a lăsat bucătăria lună.”</p>
+      <div class="who">— Ana M., Milano · cină privată</div>
+      <span class="tag">Italiană modernă</span>
+    </article>
+
+    <article class="testi">
+      <div class="stars">★★★★★</div>
+      <p class="txt">„Plating de restaurant, organizare perfectă. Invitații au fost impresionați.”</p>
+      <div class="who">— Luca R., Roma · eveniment corporate</div>
+      <span class="tag">Corporate</span>
+    </article>
+
+    <article class="testi">
+      <div class="stars">★★★★☆</div>
+      <p class="txt">„Deserturile au fost highlight-ul serii. Comunicare rapidă pe chat.”</p>
+      <div class="who">— Ioana D., Firenze · cină romantică</div>
+      <span class="tag">Patiserie & deserturi</span>
+    </article>
+  </div>
+</section>
 
     <div class="card">
       <h3>Chefii noștri</h3>
@@ -414,6 +470,28 @@ input:invalid,textarea:invalid,select:invalid{border-color:var(--green) !importa
 </nav>
 
 <script>
+  <script>
+(function(){
+  const grid = document.getElementById('testiGrid');
+  const prev = document.getElementById('tPrev');
+  const next = document.getElementById('tNext');
+  if(!grid || !prev || !next) return;
+
+  function step(dir){
+    const w = grid.getBoundingClientRect().width;
+    grid.scrollBy({ left: dir * (w * 0.85), behavior:'smooth' });
+  }
+  prev.addEventListener('click', ()=>step(-1));
+  next.addEventListener('click', ()=>step(1));
+
+  // dezactivăm butoanele când nu e overflow (desktop)
+  const ro = new ResizeObserver(()=>{
+    const canScroll = grid.scrollWidth > grid.clientWidth + 8;
+    prev.disabled = next.disabled = !canScroll;
+  });
+  ro.observe(grid);
+})();
+</script>
 /* ---------- THEME INIT + TOGGLE ---------- */
 (function(){
   const saved = localStorage.getItem('bp_theme');
