@@ -724,32 +724,32 @@ $('#profileForm')?.addEventListener('submit', e=>{
   localStorage.removeItem('bp_user');
   updateAuthUI();
   showRoute('home');
-  alert('Ai fost deconectat.');
 }
 
-// arată/ascunde butoanele + Dashboard în funcție de logare
-function updateAuthUI(){
-  const badge = $('#roleBadge'); if(badge) badge.textContent = 'Rol: ' + (state.user?.role || '-');
+function renderProfile(){
+  const wrap = $('#profileCard');
+  if(!wrap) return;
+  wrap.innerHTML = '';
 
-  // buton Deconectare
-  const lb = $('#logoutBtn'); const lbp = $('#logoutBtnProfile');
-  if(lb){ lb.style.display = state.user ? '' : 'none'; lb.onclick = logout; }
-  if(lbp){ lbp.onclick = logout; }
-
-  // Dashboard numai pentru CHEF
-  const actions = document.querySelector('.header .actions');
-  const id = 'hdrDashBtn';
-  const exists = document.getElementById(id);
-  if(state.user?.role === 'chef'){
-    if(!exists){
-      const b = document.createElement('button');
-      b.id = id; b.className = 'btn gold'; b.textContent = 'Dashboard';
-      b.onclick = ()=>{ showRoute('dashboard'); setPanel('orders'); };
-      actions.appendChild(b);
-    }
-  }else{
-    exists && exists.remove();
+  if(!state.user){
+    wrap.innerHTML = '<p style="color:#a8b6be">Neautentificat.</p>';
+    return;
   }
+
+  wrap.innerHTML = `
+    <div class="item">
+      <strong>${state.user.name}</strong><br>
+      ${state.user.email}<br>
+      <span style="color:#5e6a6e">${state.user.city||''} ${state.user.phone?('· '+state.user.phone):''}</span><br>
+      <span class="badge">Rol: ${state.user.role}</span>
+    </div>
+    <div style="margin-top:12px">
+      <button class="btn danger" id="logoutBtnProfile">Deconectare</button>
+    </div>
+  `;
+
+  // click pe Deconectare în profil
+  $('#logoutBtnProfile').onclick = logout;
 }
   
 
