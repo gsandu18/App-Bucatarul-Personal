@@ -283,6 +283,12 @@ input:invalid,textarea:invalid,select:invalid{border-color:var(--green) !importa
 
 /* ===== scrolling fin pentru carusele pe iOS ===== */
 .scroller, .testi-grid{ -webkit-overflow-scrolling:touch; scroll-behavior:smooth; }
+/* Chefii noștri – o coloană până la 960px */
+@media (max-width:960px){
+  .grid.chefs{ grid-template-columns:1fr !important; gap:16px }
+  .chef .pic{ aspect-ratio:4/3; border-radius:16px; overflow:hidden }
+  .chef .pic img{ width:100%; height:100%; object-fit:cover }
+}
 </style>
 </head>
 <body>
