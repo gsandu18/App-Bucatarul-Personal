@@ -271,6 +271,30 @@ img{max-width:100%;height:auto;display:block}
   border: 1px solid rgba(0,0,0,.1);
   color: var(--ink);
 }
+  /* ===== FIX LOGO / BRAND vizibil în ambele teme ===== */
+.brand h1,
+.brand small{
+  color: var(--ink) !important;
+  opacity: 1 !important;
+  text-shadow: none !important;
+}
+
+/* În dark păstrăm alb pur pentru contrast */
+[data-theme="dark"] .brand h1,
+[data-theme="dark"] .brand small{
+  color: #ffffff !important;
+}
+
+/* Pastila BP întotdeauna cu fond auriu clar și inel de contrast */
+.logo{
+  background:conic-gradient(from 210deg,var(--gold),#f6e7b2,var(--gold)) !important;
+  color:#000 !important;
+  box-shadow:0 0 0 2px rgba(0,0,0,.15) inset, 0 2px 6px rgba(0,0,0,.25);
+}
+[data-theme="dark"] .logo{
+  background:conic-gradient(from 210deg,var(--gold),#f3df9b,var(--gold)) !important;
+  color:#141617 !important;
+}
 </style>
 </head>
 <body>
