@@ -614,6 +614,17 @@ $('#signupForm')?.addEventListener('submit', e=>{
   state.user=nu; localStorage.setItem('bp_user',JSON.stringify(nu));
   updateAuthUI(); showRoute('dashboard');
 });
+  function updateAuthUI(){
+  $('#roleBadge') && ($('#roleBadge').textContent = 'Rol: ' + (state.user?.role || '-'));
+  toggleHeaderButtons();                            // <— nou
+}
+
+function logout(){
+  state.user = null;
+  localStorage.removeItem('bp_user');
+  showRoute('home');
+  updateAuthUI();                                   // va ascunde logout
+}
 
 /* ---------- QUICK ORDER ---------- */
 $('#quickOrderForm')?.addEventListener('submit', e=>{
@@ -734,6 +745,22 @@ function renderProfile(){
     wrap.innerHTML = '<p style="color:#a8b6be">Neautentificat.</p>';
     return;
   }
+  let currentRoute = 'home';
+
+function toggleHeaderButtons(){
+  const authBtn = document.querySelector('[data-route="auth"]');
+  const logoutBtn = document.getElementById('logoutBtn');       // din header
+  const dashBtn  = document.getElementById('hdrDashBtn');        // butonul Dashboard (pt. chefi)
+
+  // Autentificare: se ascunde dacă e logat
+  if(authBtn) authBtn.style.display = state.user ? 'none' : '';
+
+  // Deconectare: DOAR când e logat ȘI se află în dashboard
+  if(logoutBtn) logoutBtn.style.display = (state.user && currentRoute === 'dashboard') ? '' : 'none';
+
+  // Dashboard: doar pentru role=chef
+  if(dashBtn)  dashBtn.style.display = (state.user?.role === 'chef') ? '' : 'none';
+}
 
   wrap.innerHTML = `
     <div class="item">
@@ -754,11 +781,15 @@ function renderProfile(){
 
 /* ---------- SIDE EFFECTS ---------- */
 $$('.sidebar .tab').forEach(b=>b.addEventListener('click',()=>$$('.tablink').forEach(t=>t.classList.toggle('active', t.dataset.go==='dashboard'))));
-document.getElementById('year')?.append(new Date().getFullYear());
-
-/* ---------- INIT ---------- */
-updateAuthUI();
-showRoute('home');
+document.getElementById('year')?.append(new Date().function showRoute(name){
+  currentRoute = name;                              // <— nou
+  Object.values(routes).forEach(id=>$(id).classList.remove('show'));
+  $(routes[name]).classList.add('show');
+  if(name==='dashboard') renderDashboard();
+  if(name==='profile') renderProfile();
+  $$('.tablink').forEach(b=>b.classList.toggle('active', b.dataset.go===name));
+  toggleHeaderButtons();                            // <— nou
+}
 </script>
 </body>
 </html>
