@@ -328,7 +328,8 @@ input:invalid,textarea:invalid,select:invalid{border-color:var(--green) !importa
 /* Mic polish la meta */
 .chef .meta{ margin-top:6px }
 .chef .sub{ margin-top:2px }
- 
+ @media (max-width:420px){ .grid.chefs{ grid-template-columns:1fr } }
+@media (min-width:421px) and (max-width:960px){ .grid.chefs{ grid-template-columns:repeat(2,1fr) } }
 </style>
 </head>
 <body>
