@@ -299,14 +299,16 @@ input:invalid,textarea:invalid,select:invalid{border-color:var(--green) !importa
       </div>
     </div>
     <div class="actions">
-      <!-- Toggle tema -->
-      <button id="themeBtn" class="btn theme-toggle" aria-pressed="false" title="Comută tema">
-        <span id="themeIcon" aria-hidden="true">☀️</span><span id="themeLabel">Light</span>
-      </button>
-      <!-- Autentificare (Dashboard se adaugă din JS DOAR pentru rolul 'chef') -->
-      <button class="btn outline" data-route="auth">Autentificare</button>
-      <button class="btn outline" id="logoutBtnProfile" style="margin-top:10px">Deconectare</button>
-    </div>
+  <!-- Toggle tema -->
+  <button id="themeBtn" class="btn theme-toggle" aria-pressed="false" title="Comută tema">
+    <span id="themeIcon" aria-hidden="true">☀️</span><span id="themeLabel">Light</span>
+  </button>
+
+  <!-- Autentificare (se ascunde când e logat) -->
+  <button class="btn outline" data-route="auth" id="authBtn">Autentificare</button>
+
+  <!-- Deconectare (ASCUNS implicit; se vede DOAR în Dashboard) -->
+  <button class="btn outline" id="logoutBtn" style="display:none">Deconectare</button>      
   </div>
 </header>
 
@@ -388,12 +390,12 @@ input:invalid,textarea:invalid,select:invalid{border-color:var(--green) !importa
         <button class="btn outline" id="tabSignupBtn">Creează cont</button>
       </div>
       <div id="tabLogin">
-        <form id="loginForm">
-          <label>Email <input type="email" name="email" required></label>
-          <label>Parolă <input type="password" name="password" required></label>
-          <button class="btn primary" type="submit">Autentificare</button>
-          <div class="actions"
-        </div>
+  <form id="loginForm">
+    <label>Email <input type="email" name="email" required></label>
+    <label>Parolă <input type="password" name="password" required></label>
+    <button class="btn primary" type="submit">Autentificare</button>
+  </form>
+</div>
         </form>
       </div>
       <div id="tabSignup" style="display:none">
@@ -489,6 +491,7 @@ input:invalid,textarea:invalid,select:invalid{border-color:var(--green) !importa
     <div class="card">
       <h3>Profil</h3>
       <div id="profileCard"></div>
+      <button class="btn danger" id="logoutBtnProfile">Deconectare</button>
     </div>
   </section>
 </main>
@@ -558,7 +561,16 @@ const state={
 };
 
 /* ---------- ROUTING ---------- */
+let currentRoute = 'home';
 function showRoute(name){
+  currentRoute = name;
+  Object.values(routes).forEach(id=>$(id).classList.remove('show'));
+  $(routes[name]).classList.add('show');
+  if(name==='dashboard') renderDashboard();
+  if(name==='profile') renderProfile();
+  $$('.tablink').forEach(b=>b.classList.toggle('active', b.dataset.go===name));
+  toggleHeaderButtons();
+}
   Object.values(routes).forEach(id=>$(id).classList.remove('show'));
   $(routes[name]).classList.add('show');
   if(name==='dashboard') renderDashboard();
@@ -771,8 +783,7 @@ function toggleHeaderButtons(){
 
 /* ---------- SIDE EFFECTS ---------- */
 $$('.sidebar .tab').forEach(b=>b.addEventListener('click',()=>$$('.tablink').forEach(t=>t.classList.toggle('active', t.dataset.go==='dashboard'))));
-document.getElementById('year')?.append(new Date().function showRoute(name){
-  currentRoute = name;                              // <— nou
+document.getElementById('year')?.textContent = new Date().getFullYear();
   Object.values(routes).forEach(id=>$(id).classList.remove('show'));
   $(routes[name]).classList.add('show');
   if(name==='dashboard') renderDashboard();
@@ -780,6 +791,6 @@ document.getElementById('year')?.append(new Date().function showRoute(name){
   $$('.tablink').forEach(b=>b.classList.toggle('active', b.dataset.go===name));
   toggleHeaderButtons();                            // <— nou
 }
-</script>
+  
 </body>
 </html>
