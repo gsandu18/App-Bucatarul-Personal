@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="ro">
+<html lang="ro" data-theme="dark">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -31,7 +31,22 @@
 html,body{height:100%}
 body{margin:0;background:linear-gradient(180deg,#0f1113,#101316);color:var(--ink);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial}
 .container{width:min(1120px,92%);margin:auto}
-
+/* Tema Light */
+[data-theme="light"]{
+  --bg:#f7faf8; --card:#ffffff; --muted:#5e6a6e; --ink:#18221f;
+  --line:#e3ece7; --danger:#c44b4b;
+}
+/* Fundal și inputuri să folosească variabilele curente */
+body{background:linear-gradient(180deg,var(--bg),color-mix(in srgb,var(--bg) 85%, #000 15%));}
+input,select,textarea{
+  background:color-mix(in srgb,var(--bg) 92%, #000 8%);
+  color:var(--ink);
+  border:1px solid color-mix(in srgb,var(--line) 85%, var(--green) 15%);
+}
+.tabbar{
+  background:linear-gradient(180deg, color-mix(in srgb,var(--bg) 88%, #000 12%), color-mix(in srgb,var(--bg) 96%, #000 4%));
+  border-top:1px solid color-mix(in srgb, var(--line) 85%, #000 15%);
+}
 /* Header minimalist */
 .header{position:sticky;top:0;z-index:50;background:rgba(16,19,22,.75);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
 .header .wrap{display:flex;align-items:center;justify-content:space-between;padding:12px 0}
@@ -620,7 +635,25 @@ $('#profileForm')?.addEventListener('submit', e=>{
 
 /* Sidebar panel click sets tabbar focus */
 $$('.sidebar .tab').forEach(b=>b.addEventListener('click',()=>$$('.tablink').forEach(t=>t.classList.toggle('active', t.dataset.go==='dashboard'))));
-
+<script>
+// ---- THEME: init + toggle ----
+const prefersDark = matchMedia('(prefers-color-scheme: dark)').matches;
+const savedTheme = localStorage.getItem('bp_theme');
+document.documentElement.setAttribute('data-theme', savedTheme ?? (prefersDark ? 'dark' : 'light'));
+const themeBtn = document.getElementById('themeBtn');
+function refreshThemeBtn(){
+  const cur = document.documentElement.getAttribute('data-theme');
+  themeBtn.textContent = (cur==='dark') ? '🌙 Dark' : '☀️ Light';
+}
+themeBtn?.addEventListener('click', ()=>{
+  const cur = document.documentElement.getAttribute('data-theme');
+  const next = (cur==='dark')?'light':'dark';
+  document.documentElement.setAttribute('data-theme', next);
+  localStorage.setItem('bp_theme', next);
+  refreshThemeBtn();
+});
+refreshThemeBtn();
+</script>
 /* Init */
 updateAuthUI();
 showRoute('home');
