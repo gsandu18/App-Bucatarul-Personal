@@ -227,6 +227,50 @@ img{max-width:100%;height:auto;display:block}
   background:var(--gold);
   color:#000;
 }
+  /* === LOGO & BRAND VIZIBILE ÎN ORICE TEMĂ === */
+
+/* 1) Header complet opac + z-index mare (stă peste imagine) */
+.header{
+  background: linear-gradient(180deg, var(--bg) 98%, color-mix(in srgb,var(--bg) 90%, transparent));
+  border-bottom: 1px solid var(--line);
+  backdrop-filter: blur(10px);
+  z-index: 999;
+}
+[data-theme="light"] .header{
+  background: linear-gradient(180deg, #ffffff 96%, #f3f6f5 100%);
+  border-bottom: 1px solid #e1e7e4;
+}
+
+/* 2) Text brand mereu lizibil */
+.brand h1,
+.brand small{
+  color: var(--ink);
+  text-shadow: none;   /* eliminăm umbra care închidea textul în dark */
+  opacity: 1;
+}
+[data-theme="dark"] .brand h1,
+[data-theme="dark"] .brand small{
+  color: #ffffff;
+}
+
+/* 3) Pastila BP cu inel de contrast (vizibilă pe fundaluri deschise/închise) */
+.logo{
+  box-shadow:
+    0 2px 12px rgba(0,0,0,.25),              /* umbră externă */
+    0 0 0 1.5px rgba(0,0,0,.25) inset;       /* inel interior întunecat */
+}
+[data-theme="light"] .logo{
+  box-shadow:
+    0 2px 12px rgba(0,0,0,.15),
+    0 0 0 1.5px rgba(255,255,255,.55) inset; /* inel interior deschis în light */
+}
+
+/* 4) Buton „Autentificare” clar în Light */
+[data-theme="light"] .btn.glass{
+  background: rgba(255,255,255,.8);
+  border: 1px solid rgba(0,0,0,.1);
+  color: var(--ink);
+}
 </style>
 </head>
 <body>
