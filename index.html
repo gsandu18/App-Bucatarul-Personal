@@ -283,7 +283,9 @@ input:invalid,textarea:invalid,select:invalid{border-color:var(--green) !importa
 
 /* ===== scrolling fin pentru carusele pe iOS ===== */
 .scroller, .testi-grid{ -webkit-overflow-scrolling:touch; scroll-behavior:smooth; }
-  
+  .btn.danger{background:transparent;border:1px solid var(--danger);color:var(--danger)}
+.btn.danger:hover{background:color-mix(in srgb, var(--danger) 12%, transparent)}
+@media (max-width:640px){ #logoutBtnProfile{width:100%} }
 </style>
 </head>
 <body>
@@ -393,7 +395,7 @@ input:invalid,textarea:invalid,select:invalid{border-color:var(--green) !importa
           <div class="actions">
   <button class="btn theme-toggle" id="themeBtn"><span id="themeIcon">☀️</span><span id="themeLabel">Light</span></button>
   <button class="btn outline" data-route="auth">Autentificare</button>
-  <button class="btn outline" id="logoutBtn" style="display:none">Deconectare</button>
+  
 </div>
         </form>
       </div>
