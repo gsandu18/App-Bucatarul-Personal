@@ -295,6 +295,74 @@ img{max-width:100%;height:auto;display:block}
   background:conic-gradient(from 210deg,var(--gold),#f3df9b,var(--gold)) !important;
   color:#141617 !important;
 }
+  /* === Form fields: alb + text verde rubin === */
+:root{
+  --green:#0e5a43;  /* verde rubin */
+}
+
+/* Fundal alb, text verde, colțuri rotunjite */
+input, select, textarea{
+  background:#ffffff !important;
+  color:var(--green) !important;
+  caret-color:var(--green);
+  border:1.5px solid color-mix(in srgb, var(--green) 35%, #dfe7e3 65%) !important;
+  border-radius:14px !important;
+  padding:12px 14px !important;
+  box-shadow:none;
+}
+
+/* Placeholder verde rubin, puțin estompat */
+input::placeholder,
+textarea::placeholder{
+  color:color-mix(in srgb, var(--green) 70%, #8fb4a6 30%) !important;
+  opacity:1; /* iOS Safari */
+}
+
+/* Focus: accent clar verde rubin */
+input:focus, select:focus, textarea:focus{
+  outline:3px solid color-mix(in srgb, var(--green) 55%, transparent);
+  outline-offset:2px;
+  border-color:var(--green) !important;
+  box-shadow:0 0 0 4px color-mix(in srgb, var(--green) 18%, transparent);
+}
+
+/* Disabled: păstrăm tema, dar estompat */
+input:disabled, select:disabled, textarea:disabled{
+  background:#f6f8f7 !important;
+  color:color-mix(in srgb, var(--green) 50%, #93a39d 50%) !important;
+  border-color:#e3ece7 !important;
+}
+
+/* Dark mode: câmpurile rămân ALBE pentru contrast maxim */
+[data-theme="dark"] input,
+[data-theme="dark"] select,
+[data-theme="dark"] textarea{
+  background:#ffffff !important;
+  color:var(--green) !important;
+  border-color:color-mix(in srgb, var(--green) 35%, #dfe7e3 65%) !important;
+}
+
+/* Select – mică cosmetizare (fără să stricăm accesibilitatea) */
+select{
+  appearance:none; -webkit-appearance:none; -moz-appearance:none;
+  background-image:
+    linear-gradient(45deg, transparent 50%, var(--green) 50%),
+    linear-gradient(135deg, var(--green) 50%, transparent 50%);
+  background-position:
+    calc(100% - 22px) 50%,
+    calc(100% - 14px) 50%;
+  background-size:8px 8px, 8px 8px;
+  background-repeat:no-repeat;
+  padding-right:34px !important; /* loc pentru săgeată */
+}
+
+/* Valid/invalid (opțional) */
+input:invalid, textarea:invalid, select:invalid{
+  border-color:#e6b8b8 !important;
+}
+input:valid, textarea:valid, select:valid{
+  border-color:var(--green) !important;
+}
 </style>
 </head>
 <body>
