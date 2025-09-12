@@ -363,6 +363,98 @@ input:invalid, textarea:invalid, select:invalid{
 input:valid, textarea:valid, select:valid{
   border-color:var(--green) !important;
 }
+  /* ===== GLOBAL FORMS: alb + verde rubin (#0e5a43) ===== */
+:root{ --green:#0e5a43 }
+
+/* Label + legende */
+label, legend{ color:var(--green) }
+
+/* Toate input/select/textarea */
+input, select, textarea{
+  background:#fff !important;
+  color:var(--green) !important;
+  caret-color:var(--green);
+  border:1.5px solid color-mix(in srgb, var(--green) 35%, #dfe7e3 65%) !important;
+  border-radius:14px !important;
+  padding:12px 14px !important;
+  box-shadow:none;
+}
+
+/* Placeholder */
+input::placeholder, textarea::placeholder{
+  color:color-mix(in srgb, var(--green) 70%, #8fb4a6 30%) !important; opacity:1;
+}
+
+/* Focus */
+input:focus, select:focus, textarea:focus{
+  outline:3px solid color-mix(in srgb, var(--green) 55%, transparent);
+  outline-offset:2px;
+  border-color:var(--green) !important;
+  box-shadow:0 0 0 4px color-mix(in srgb, var(--green) 18%, transparent);
+}
+
+/* Disabled */
+input:disabled, select:disabled, textarea:disabled{
+  background:#f6f8f7 !important;
+  color:color-mix(in srgb, var(--green) 50%, #93a39d 50%) !important;
+  border-color:#e3ece7 !important;
+}
+
+/* Dark mode: câmpurile rămân ALBE pentru contrast */
+[data-theme="dark"] input,
+[data-theme="dark"] select,
+[data-theme="dark"] textarea{
+  background:#fff !important;
+  color:var(--green) !important;
+  border-color:color-mix(in srgb, var(--green) 35%, #dfe7e3 65%) !important;
+}
+
+/* Select – săgeată custom */
+select{
+  appearance:none; -webkit-appearance:none; -moz-appearance:none;
+  background-image:
+    linear-gradient(45deg, transparent 50%, var(--green) 50%),
+    linear-gradient(135deg, var(--green) 50%, transparent 50%);
+  background-position: calc(100% - 22px) 50%, calc(100% - 14px) 50%;
+  background-size:8px 8px, 8px 8px; background-repeat:no-repeat;
+  padding-right:34px !important;
+}
+
+/* Radio/checkbox – accent verde rubin */
+input[type="radio"], input[type="checkbox"]{ accent-color:var(--green) }
+
+/* File input – buton alb cu text verde */
+input[type="file"]{
+  color:var(--green);
+  border-radius:14px !important;
+}
+input[type="file"]::file-selector-button{
+  background:#fff; color:var(--green);
+  border:1.5px solid color-mix(in srgb, var(--green) 35%, #dfe7e3 65%);
+  border-radius:12px; padding:10px 12px; margin-right:10px; cursor:pointer;
+}
+
+/* Date/Time/Number – păstrăm aceleași culori */
+input[type="date"], input[type="time"], input[type="datetime-local"], input[type="number"]{
+  color:var(--green); background:#fff !important;
+}
+
+/* Autofill (Chrome/Safari) – elimină galbenul */
+input:-webkit-autofill,
+textarea:-webkit-autofill,
+select:-webkit-autofill{
+  -webkit-text-fill-color:var(--green);
+  box-shadow:0 0 0 1000px #fff inset;
+  transition:background-color 5000s ease-in-out 0s;
+}
+
+/* Valid/invalid (opțional) */
+input:invalid, textarea:invalid, select:invalid{
+  border-color:#e6b8b8 !important;
+}
+input:valid, textarea:valid, select:valid{
+  border-color:var(--green) !important;
+}
 </style>
 </head>
 <body>
