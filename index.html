@@ -635,7 +635,6 @@ $('#profileForm')?.addEventListener('submit', e=>{
 
 /* Sidebar panel click sets tabbar focus */
 $$('.sidebar .tab').forEach(b=>b.addEventListener('click',()=>$$('.tablink').forEach(t=>t.classList.toggle('active', t.dataset.go==='dashboard'))));
-<script>
 // ---- THEME: init + toggle ----
 const prefersDark = matchMedia('(prefers-color-scheme: dark)').matches;
 const savedTheme = localStorage.getItem('bp_theme');
