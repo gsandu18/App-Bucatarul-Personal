@@ -455,6 +455,56 @@ input:invalid, textarea:invalid, select:invalid{
 input:valid, textarea:valid, select:valid{
   border-color:var(--green) !important;
 }
+  /* === Corecție completă pentru câmpuri === */
+input, select, textarea{
+  background:#fff !important;
+  color:var(--green) !important;
+  caret-color:var(--green);
+  border:1.5px solid var(--green) !important;
+  border-radius:14px !important;
+  padding:12px 14px !important;
+  box-shadow:none !important;
+}
+
+/* Placeholder tot verde rubin */
+input::placeholder,
+textarea::placeholder{
+  color:color-mix(in srgb, var(--green) 80%, #9cb5ac 20%) !important;
+  opacity:1;
+}
+
+/* Focus */
+input:focus, select:focus, textarea:focus{
+  outline:3px solid color-mix(in srgb, var(--green) 55%, transparent);
+  outline-offset:2px;
+  border-color:var(--green) !important;
+  box-shadow:0 0 0 4px color-mix(in srgb, var(--green) 18%, transparent);
+}
+
+/* Anulează borderul roșu la required/invalid */
+input:invalid, textarea:invalid, select:invalid{
+  border-color:var(--green) !important;
+  box-shadow:none !important;
+}
+
+/* Disabled */
+input:disabled, select:disabled, textarea:disabled{
+  background:#f6f8f7 !important;
+  color:color-mix(in srgb, var(--green) 50%, #93a39d 50%) !important;
+  border-color:#e3ece7 !important;
+}
+
+/* Dark mode: câmpurile rămân albe */
+[data-theme="dark"] input,
+[data-theme="dark"] select,
+[data-theme="dark"] textarea{
+  background:#fff !important;
+  color:var(--green) !important;
+  border-color:var(--green) !important;
+}
+
+/* Label */
+label, legend{ color:var(--green) }
 </style>
 </head>
 <body>
