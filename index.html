@@ -514,8 +514,7 @@ input:invalid,textarea:invalid,select:invalid{border-color:var(--green) !importa
   <section class="route" id="profile">
     <div class="card-head">
   <h3 style="margin:0">Profil</h3>
-  <button id="logoutBtnProfile" class="btn danger" type="button">Deconectare</button>
-</div>
+  
 <div id="profileCard"></div>
   </section>
 </main>
@@ -744,6 +743,8 @@ $('#profileForm')?.addEventListener('submit', e=>{
   state.user.phone=$('#profilePhone').value; state.user.role=$('#profileRole').value;
   localStorage.setItem('bp_user',JSON.stringify(state.user)); updateAuthUI(); renderProfile(); alert('Profil actualizat');
 });
+  <button id="logoutBtnProfile" class="btn danger" type="button">Deconectare</button>
+</div>
   
 /* ---------- SIDE EFFECTS ---------- */
 $$('.sidebar .tab').forEach(b=>b.addEventListener('click',()=>$$('.tablink').forEach(t=>t.classList.toggle('active', t.dataset.go==='dashboard'))));
