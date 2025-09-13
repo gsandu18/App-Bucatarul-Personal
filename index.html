@@ -183,132 +183,45 @@ input:invalid,textarea:invalid,select:invalid{border-color:var(--green) !importa
   .grid{grid-template-columns:1fr}
   .scroller{grid-auto-columns:90%}
 }
-  /* ===== OPTIMIZARE RESPONSIVE AUTENTIFICARE ===== */
+  //* ===== OPTIMIZARE RESPONSIVE AUTENTIFICARE ===== */
 @media (max-width:640px){
+  #auth .card{ padding:20px 16px; border-radius:18px; }
+  #auth input, #auth select, #auth button{ width:100%; margin-bottom:10px; font-size:16px; }
+  #tabLoginBtn, #tabSignupBtn{ flex:1; padding:10px 0; font-size:15px; }
+  #auth p{ font-size:13px; text-align:center; }
+}
 
-  /* card login mai aerisit */
-  #auth .card{
-    padding:20px 16px;
-    border-radius:18px;
-  }
-
-  /* câmpurile pe toată lățimea */
-  #auth input,
-  #auth select,
-  #auth button{
-    width:100%;
-    margin-bottom:10px;
-    font-size:16px;
-  }
-
-  /* butoanele Login / Creează cont cu spațiere mai bună */
-  #tabLoginBtn, #tabSignupBtn{
-    flex:1;
-    padding:10px 0;
-    font-size:15px;
-  }
-
-  /* text mic sub form */
-  #auth p{
-    font-size:13px;
-    text-align:center;
-  }
-
-  /* footer legal compact */
-  footer.card{
-    font-size:13px;
-    line-height:1.4;
-    padding:18px 12px;
-  }
-  /* === Forms: doar pe mobil (<=640px) === */
+/* === Forms doar pe mobil (<=640px) === */
 @media (max-width:640px){
-  /* aranjare pe o singură coloană, spațiere comodă */
-  #quickOrderForm,
-  #menuForm,
-  #eventForm,
-  #chatForm{
-    display:grid;
-    grid-template-columns: 1fr;
-    gap:10px;
+  #quickOrderForm, #menuForm, #eventForm, #chatForm{ display:grid; grid-template-columns:1fr; gap:10px; }
+  #quickOrderForm label, #menuForm label, #eventForm label{ display:flex; flex-direction:column; gap:6px; font-weight:600; }
+  #quickOrderForm input, #quickOrderForm select, #quickOrderForm textarea,
+  #menuForm input, #eventForm input, #eventForm textarea, #chatForm input{
+    width:100%; min-height:44px; font-size:16px;
   }
-
-  /* eticheta deasupra câmpului */
-  #quickOrderForm label,
-  #menuForm label,
-  #eventForm label{
-    display:flex;
-    flex-direction:column;
-    gap:6px;
-    font-weight:600;
+  #quickOrderForm .btn.primary, #menuForm .btn.primary, #eventForm .btn.primary, #chatForm .btn.primary{
+    grid-column:1 / -1; width:100%;
   }
-
-  /* câmpuri full-width + prevenire zoom iOS */
-  #quickOrderForm input,
-  #quickOrderForm select,
-  #quickOrderForm textarea,
-  #menuForm input,
-  #eventForm input,
-  #eventForm textarea,
-  #chatForm input{
-    width:100%;
-    min-height:44px;
-    font-size:16px; /* evită zoom-ul pe iOS */
-  }
-
-  /* butoane: rând separat, full-width */
-  #quickOrderForm .btn.primary,
-  #menuForm .btn.primary,
-  #eventForm .btn.primary,
-  #chatForm .btn.primary{
-    grid-column:1 / -1;
-    width:100%;
-  }
-
-  /* în “Comandă rapidă” micșorăm puțin spațiile */
   #home .card h3{ margin-bottom:6px; }
 }
-  /* === Dashboard: 1 coloană + formulare fluide doar pe mobil === */
+
+/* === Dashboard pe mobil === */
 @media (max-width:640px){
-  /* pune tot dashboard-ul pe o singură coloană */
-  .stack{
-    grid-template-columns:1fr;
-    gap:16px;
-  }
-  .sidebar{
-    order:2;           /* mută meniul dedesubt dacă vrei */
-    width:100%;
-  }
-
-  /* toate formularele din dashboard devin full width */
-  #dashboard form,
-  #dashboard input,
-  #dashboard select,
-  #dashboard textarea,
-  #dashboard button{
-    width:100%;
-  }
-
-  /* câmpurile din “Meniurile mele”, “Chat”, “Calendar”, “Setări profil” se aliniază vertical */
-  #menuForm,
-  #chatForm,
-  #eventForm,
-  #profileForm{
-    display:grid;
-    grid-template-columns:1fr;
-    gap:10px;
-  }
-
-  /* butoanele devin și ele pe rând separat */
-  #menuForm .btn,
-  #chatForm .btn,
-  #eventForm .btn,
-  #profileForm .btn{
-    grid-column:1 / -1;
-  }
+  .stack{ grid-template-columns:1fr; gap:16px; }
+  .sidebar{ width:100%; order:2; }
+  #dashboard form, #dashboard input, #dashboard select, #dashboard textarea, #dashboard button{ width:100%; }
+  #menuForm, #chatForm, #eventForm, #profileForm{ display:grid; grid-template-columns:1fr; gap:10px; }
+  #menuForm .btn, #chatForm .btn, #eventForm .btn, #profileForm .btn{ grid-column:1 / -1; }
+  #logoutBtnDash{ width:100%; }
 }
-  .btn.danger{ background:var(--danger); color:#fff }
-.btn.danger:hover{ filter:saturate(1.05) }
 
+/* Panourile din dashboard: doar cel cu .show este vizibil */
+.panel{ display:none }
+.panel.show{ display:block }
+
+/* Buton danger */
+.btn.danger{ background:var(--danger); color:#fff }
+.btn.danger:hover{ filter:saturate(1.05) }
 @media (max-width:640px){
   #logoutBtnDash{ width:100% }        /* pe mobil, full-width dacă e pe rând 
   /* Panourile din dashboard: doar cel cu .show este vizibil */
@@ -454,7 +367,7 @@ input:invalid,textarea:invalid,select:invalid{border-color:var(--green) !importa
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;gap:8px;flex-wrap:wrap">
   <h3 style="margin:0">Comenzi</h3>
   <div style="display:flex;gap:8px;flex-wrap:wrap">
-    <button id="logoutBtnDash" class="btn danger" type="button">Deconectare</button>
+    <button id="logoutBtnDash" class="btn danger" type="button" data-logout>Deconectare</button>
     <button id="newOrderBtn" class="btn gold" type="button">+ Cerere nouă</button>
   </div>
   </div>
@@ -512,13 +425,16 @@ input:invalid,textarea:invalid,select:invalid{border-color:var(--green) !importa
     </div>
   </section>
 
-  <!-- PROFILE -->
-  <section class="route" id="profile">
-    <div class="card-head">
-  <h3 style="margin:0">Profil</h3>
-  
-<div id="profileCard"></div>
-  </section>
+ <!-- PROFILE -->
+<section class="route" id="profile">
+  <div class="card">
+    <div class="card-head" style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px">
+      <h3 style="margin:0">Profil</h3>
+      <button id="logoutBtnProfile" class="btn danger" type="button" data-logout>Deconectare</button>
+    </div>
+    <div id="profileCard"></div>
+  </div>
+</section>
 </main>
 
 <!-- LEGAL -->
@@ -642,7 +558,22 @@ $('#signupForm')?.addEventListener('submit', e=>{
   state.user=nu; localStorage.setItem('bp_user',JSON.stringify(nu));
   updateAuthUI(); showRoute('dashboard');
 });
+// ===== Logout: funcție + delegare universală =====
+function logout(){
+  state.user = null;
+  try { localStorage.removeItem('bp_user'); } catch {}
+  // scoatem butonul Dashboard din header dacă există
+  document.getElementById('hdrDashBtn')?.remove();
+  updateAuthUI();
+  showRoute('home');
+  alert('Te-ai deconectat.');
+}
 
+// orice element cu data-logout va declanșa logout()
+document.addEventListener('click', (e)=>{
+  const btn = e.target.closest('[data-logout]');
+  if(btn){ e.preventDefault(); logout(); }
+}, {passive:false});
 /* ---------- QUICK ORDER ---------- */
 $('#quickOrderForm')?.addEventListener('submit', e=>{
   e.preventDefault();
@@ -651,7 +582,7 @@ $('#quickOrderForm')?.addEventListener('submit', e=>{
   state.orders.unshift(o); localStorage.setItem('bp_orders',JSON.stringify(state.orders));
   alert('Cerere trimisă!'); e.target.reset(); renderDashboard();
 });
-  showNotification('Cerere nouă', `${o.tip || 'Comandă'} — ${o.nume || ''}`);
+  
 
 /* ---------- DASHBOARD RENDER ---------- */
 function renderDashboard(){
@@ -725,9 +656,6 @@ function renderChat(){
   });
   box.scrollTop=box.scrollHeight;
 }
-  showNotification('Mesaj nou', `${from}: ${text}`);
-  
-  
 
 /* ---------- EVENTS ---------- */
 $('#eventForm')?.addEventListener('submit', e=>{
