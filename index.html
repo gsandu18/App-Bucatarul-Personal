@@ -469,6 +469,19 @@ const store = (() => {
   }
 })();
 
+// …existing store…
+
+// === SEED DEMO USER (ca să meargă Login direct) ===
+(function seedDemo(){
+  try{
+    const users = JSON.parse(store.getItem('bp_users')||'[]');
+    if(!users.find(u=>u.email==='demo@bp.ro')){
+      users.push({id:'u_demo', name:'Demo', email:'demo@bp.ro', password:'1234', role:'chef', city:'Milano', phone:''});
+      store.setItem('bp_users', JSON.stringify(users));
+    }
+  }catch{}
+})();
+
 // ===== Helpers =====
 const $=(s,c=document)=>c.querySelector(s), $$=(s,c=document)=>[...c.querySelectorAll(s)];
 const routes={home:'#home',auth:'#auth',dashboard:'#dashboard',profile:'#profile'};
