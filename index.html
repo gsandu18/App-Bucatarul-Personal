@@ -229,6 +229,25 @@ input:invalid,textarea:invalid,select:invalid{border-color:var(--green) !importa
 .btn.danger{background:transparent;border:1px solid var(--danger);color:var(--danger)}
 .btn.danger:hover{background:color-mix(in srgb, var(--danger) 12%, transparent)}
 @media (max-width:640px){ #logoutBtnProfile{width:100%} }
+/* === Chefii noștri: responsive solid === */
+.grid{ display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:12px }
+@media (max-width:960px){ .grid{ grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)) } }
+@media (max-width:640px){ .grid{ grid-template-columns:repeat(auto-fit, minmax(160px, 1fr)) } }
+
+/* Toast notificări (fallback dacă nu e permis Notification API) */
+.toast{
+  position:fixed; right:16px; bottom:100px; z-index:9999;
+  background:#111; color:#fff; padding:12px 14px; border-radius:12px;
+  box-shadow:0 12px 30px rgba(0,0,0,.35); display:none
+}
+.toast.show{ display:block; animation:slidein .25s ease }
+@keyframes slidein{ from{ transform:translateY(10px); opacity:0 } to{ transform:translateY(0); opacity:1 } }
+
+/* Badge număr comenzi noi pentru chefi */
+#ordersBadge{
+  display:none; margin-left:6px; background:#ef6b6b; color:#fff;
+  border-radius:999px; padding:2px 8px; font-size:12px; line-height:18px
+}
 </style>
 </head>
 <body>
