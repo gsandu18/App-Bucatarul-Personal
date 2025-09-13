@@ -743,8 +743,7 @@ $('#profileForm')?.addEventListener('submit', e=>{
   state.user.phone=$('#profilePhone').value; state.user.role=$('#profileRole').value;
   localStorage.setItem('bp_user',JSON.stringify(state.user)); updateAuthUI(); renderProfile(); alert('Profil actualizat');
 });
-  <button id="logoutBtnProfile" class="btn danger" type="button">Deconectare</button>
-</div>
+  
   
 /* ---------- SIDE EFFECTS ---------- */
 $$('.sidebar .tab').forEach(b=>b.addEventListener('click',()=>$$('.tablink').forEach(t=>t.classList.toggle('active', t.dataset.go==='dashboard'))));
