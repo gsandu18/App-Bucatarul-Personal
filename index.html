@@ -423,15 +423,37 @@ input:invalid,textarea:invalid,select:invalid{border-color:var(--green) !importa
 
         <!-- MENUS -->
         <div class="panel" id="panel-menus">
-          <h3>Meniurile mele</h3>
-          <form id="menuForm" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">
-            <input id="menuTitle" placeholder="Titlu" required>
-            <input id="menuPrice" type="number" placeholder="Preț RON" required>
-            <input id="menuImageUrl" type="url" placeholder="URL imagine (opțional)">
-            <button class="btn primary" type="submit">Salvează</button>
-          </form>
-          <div id="menusList" class="grid"></div>
-        </div>
+  <h3>Meniurile mele</h3>
+
+  <form id="menuForm" style="display:grid;gap:10px;margin-bottom:10px">
+    <input id="menuTitle" placeholder="Titlu meniu" required>
+    <input id="menuPrice" type="number" placeholder="Preț total RON" required>
+    <input id="menuImageUrl" type="url" placeholder="URL imagine (opțional)">
+
+    <!-- BUILDER pe secțiuni -->
+    <div class="card">
+      <strong>Adaugă preparate</strong>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px">
+        <select id="courseSection">
+          <option value="Aperitive">Aperitive</option>
+          <option value="Main course 1">Main course 1</option>
+          <option value="Main course 2">Main course 2</option>
+          <option value="Desert">Desert</option>
+        </select>
+        <input id="courseName" placeholder="Preparat">
+        <input id="courseDesc" placeholder="Descriere (scurt)">
+        <input id="coursePrice" type="number" placeholder="RON">
+        <button id="addCourseBtn" class="btn outline" type="button">+ Adaugă preparat</button>
+      </div>
+      <ul id="courseList" class="list" style="margin-top:8px"></ul>
+    </div>
+
+    <button class="btn primary" type="submit">Salvează meniul</button>
+  </form>
+
+  <div id="menusList" class="grid"></div>
+</div>
+  
 
         <!-- CHAT -->
         <div class="panel" id="panel-chat">
@@ -507,9 +529,39 @@ input:invalid,textarea:invalid,select:invalid{border-color:var(--green) !importa
   </button>
   <button class="tablink" data-go="profile">
     <span class="ico"><svg viewBox="0 0 24 24"><path d="M12 12a5 5 0 1 0-5-5 5 5 0 0 0 5 5Zm0 2c-5 0-9 2.5-9 5v1h18v-1c0-2.5-4-5-9-5Z"/></svg></span>Profil
+    <button class="tab" data-panel="video">Video chat (beta)</button>
   </button>
 </nav>
+  
+<!-- VIDEO -->
+<div class="panel" id="panel-video">
+  <h3>Video chat (beta)</h3>
+  <div class="card" style="display:grid;gap:10px">
+    <div style="display:grid;gap:8px">
+      <video id="localVideo" autoplay playsinline muted style="width:100%;border-radius:12px;border:1px solid var(--line)"></video>
+      <video id="remoteVideo" autoplay playsinline style="width:100%;border-radius:12px;border:1px solid var(--line)"></video>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button id="startCamBtn" class="btn primary" type="button">Pornește camera</button>
+        <button id="stopCamBtn" class="btn outline" type="button">Oprește camera</button>
+      </div>
+    </div>
 
+    <div class="card" style="display:grid;gap:8px">
+      <strong>Host (creează invitație)</strong>
+      <button id="makeOfferBtn" class="btn gold" type="button">Generează invitație</button>
+      <textarea id="offerBox" placeholder="Offer (copiază și trimite invitatului)" rows="4"></textarea>
+      <textarea id="answerBox" placeholder="Lipește aici Answer-ul primit de la invitat" rows="4"></textarea>
+      <button id="setAnswerBtn" class="btn primary" type="button">Conectează</button>
+    </div>
+
+    <div class="card" style="display:grid;gap:8px">
+      <strong>Invitat (primește invitația)</strong>
+      <textarea id="remoteOfferBox" placeholder="Lipește aici Offer-ul primit" rows="4"></textarea>
+      <button id="answerOfferBtn" class="btn primary" type="button">Generează Answer</button>
+      <textarea id="myAnswerBox" placeholder="Trimite Host-ului acest Answer" rows="4"></textarea>
+    </div>
+  </div>
+</div>
 <script>
 /* ---------- THEME INIT + TOGGLE ---------- */
 (function(){
@@ -660,6 +712,90 @@ function renderDashboard(){
       ml.appendChild(c);
     });
   }
+  // --- Menu Builder (în memorie cât editezi) ---
+let tempCourses = [];  // {section,name,desc,price}
+
+function renderCourseList(){
+  const ul = document.getElementById('courseList'); if(!ul) return;
+  if(tempCourses.length===0){ ul.innerHTML='<li class="item" style="color:#8fa0a8">Niciun preparat adăugat.</li>'; return; }
+  // grupează pe secțiuni
+  const groups = tempCourses.reduce((acc,x)=>{
+    (acc[x.section] ||= []).push(x); return acc;
+  }, {});
+  ul.innerHTML = Object.entries(groups).map(([sec,items])=>{
+    const li = items.map((it,i)=>`
+      <div class="item">
+        <div style="display:flex;justify-content:space-between;gap:8px">
+          <div><strong>${it.name||'-'}</strong> — <span style="color:#5e6a6e">${it.desc||''}</span></div>
+          <div><strong>${Number(it.price||0)} RON</strong></div>
+        </div>
+        <button data-remove="${sec}::${it.name}" class="btn outline" type="button" style="margin-top:6px">Șterge</button>
+      </div>`).join('');
+    return `<li class="item"><strong>${sec}</strong>${li}</li>`;
+  }).join('');
+
+  // ștergere
+  ul.querySelectorAll('[data-remove]').forEach(b=>{
+    b.onclick = ()=>{
+      const [sec,name] = b.dataset.remove.split('::');
+      tempCourses = tempCourses.filter(x=> !(x.section===sec && x.name===name));
+      renderCourseList();
+    };
+  });
+}
+
+document.getElementById('addCourseBtn')?.addEventListener('click', ()=>{
+  const section = document.getElementById('courseSection')?.value?.trim();
+  const name    = document.getElementById('courseName')?.value?.trim();
+  const desc    = document.getElementById('courseDesc')?.value?.trim();
+  const price   = Number(document.getElementById('coursePrice')?.value||0);
+  if(!name){ alert('Dă un nume preparatului.'); return; }
+  tempCourses.push({section,name,desc,price});
+  document.getElementById('courseName').value='';
+  document.getElementById('courseDesc').value='';
+  document.getElementById('coursePrice').value='';
+  renderCourseList();
+});
+
+// suprascrie handlerul tău de #menuForm (sau adaptează-l)
+document.getElementById('menuForm')?.addEventListener('submit', (e)=>{
+  e.preventDefault();
+  const title = document.getElementById('menuTitle')?.value?.trim();
+  const price = Number(document.getElementById('menuPrice')?.value||0);
+  const imageUrl = document.getElementById('menuImageUrl')?.value?.trim();
+  if(!title){ alert('Titlu obligatoriu.'); return; }
+  // salvează meniu cu secțiuni
+  state.menus.unshift({ id:'m_'+Date.now(), title, price, imageUrl, courses: tempCourses.slice() });
+  localStorage.setItem('bp_menus', JSON.stringify(state.menus));
+  // reset
+  e.target.reset(); tempCourses = []; renderCourseList(); renderMenus();
+  alert('Meniu salvat.');
+});
+
+// randare carduri cu secțiuni (upgrade la funcția ta renderMenus)
+function renderMenus(){
+  const ml = document.getElementById('menusList'); if(!ml) return; ml.innerHTML='';
+  state.menus.forEach(m=>{
+    const groups = (m.courses||[]).reduce((acc,x)=>{ (acc[x.section] ||= []).push(x); return acc; },{});
+    const coursesHtml = Object.entries(groups).map(([sec,items])=>`
+      <div class="item">
+        <strong>${sec}</strong>
+        <ul style="margin:6px 0 0 14px; padding:0; list-style:disc">
+          ${items.map(it=>`<li>${it.name}${it.desc?` — <span style="color:#5e6a6e">${it.desc}</span>`:''}${(it.price||it.price===0)?` — <strong>${Number(it.price)} RON</strong>`:''}</li>`).join('')}
+        </ul>
+      </div>`).join('');
+    const c = document.createElement('div');
+    c.className='card';
+    c.innerHTML = `
+      ${m.imageUrl?`<div style="aspect-ratio:4/3;border-radius:14px;overflow:hidden;margin:-4px -4px 10px;border:1px solid var(--line)">
+        <img src="${m.imageUrl}" alt="" style="width:100%;height:100%;object-fit:cover"></div>`:''}
+      <strong style="font-size:18px">${m.title}</strong>
+      <div style="color:#5e6a6e;margin-bottom:8px">Preț: ${m.price} RON</div>
+      ${coursesHtml || '<div class="item" style="color:#8fa0a8">Fără preparate definite.</div>'}
+    `;
+    ml.appendChild(c);
+  });
+}
 
   // CHAT
   renderChat();
@@ -725,11 +861,58 @@ $('#profileForm')?.addEventListener('submit', e=>{
   localStorage.setItem('bp_user',JSON.stringify(state.user)); updateAuthUI(); renderProfile(); alert('Profil actualizat');
 });
   
+  // --- WebRTC demo (fără server; copy-paste SDP) ---
+let pc, localStream;
+const iceCfg = { iceServers: [{urls:'stun:stun.l.google.com:19302'}] };
+
+async function ensureCam(){
+  if(localStream) return localStream;
+  localStream = await navigator.mediaDevices.getUserMedia({video:true, audio:true});
+  document.getElementById('localVideo').srcObject = localStream;
+  return localStream;
+}
+function newPC(){
+  pc = new RTCPeerConnection(iceCfg);
+  pc.ontrack = (e)=>{ document.getElementById('remoteVideo').srcObject = e.streams[0]; };
+  (localStream||[]).getTracks?.().forEach(tr=> pc.addTrack(tr, localStream));
+  return pc;
+}
+
+document.getElementById('startCamBtn')?.addEventListener('click', ensureCam);
+document.getElementById('stopCamBtn')?.addEventListener('click', ()=>{
+  localStream?.getTracks()?.forEach(t=>t.stop()); localStream=null;
+  document.getElementById('localVideo').srcObject=null;
+});
+
+document.getElementById('makeOfferBtn')?.addEventListener('click', async ()=>{
+  await ensureCam();
+  newPC();
+  const offer = await pc.createOffer(); await pc.setLocalDescription(offer);
+  document.getElementById('offerBox').value = JSON.stringify(pc.localDescription);
+});
+
+document.getElementById('setAnswerBtn')?.addEventListener('click', async ()=>{
+  const txt = document.getElementById('answerBox').value.trim();
+  if(!txt) return alert('Lipește answer-ul.');
+  await pc.setRemoteDescription(JSON.parse(txt));
+  alert('Conectat (host).');
+});
+
+document.getElementById('answerOfferBtn')?.addEventListener('click', async ()=>{
+  await ensureCam();
+  newPC();
+  const offerTxt = document.getElementById('remoteOfferBox').value.trim();
+  if(!offerTxt) return alert('Lipește offer-ul primit.');
+  await pc.setRemoteDescription(JSON.parse(offerTxt));
+  const answer = await pc.createAnswer(); await pc.setLocalDescription(answer);
+  document.getElementById('myAnswerBox').value = JSON.stringify(pc.localDescription);
+  alert('Trimite acest Answer host-ului.');
+});
   
 /* ---------- SIDE EFFECTS ---------- */
 $$('.sidebar .tab').forEach(b=>b.addEventListener('click',()=>$$('.tablink').forEach(t=>t.classList.toggle('active', t.dataset.go==='dashboard'))));
 document.getElementById('year')?.append(new Date().getFullYear());
-
+  
 /* ---------- INIT ---------- */
 updateAuthUI();
 showRoute('home');
