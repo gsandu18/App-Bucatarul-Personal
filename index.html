@@ -429,7 +429,7 @@ input:invalid,textarea:invalid,select:invalid{border-color:var(--green) !importa
   <br>Acest site este o demonstrație. Rezervările reale trebuie confirmate de bucătar.
   <br><a href="#">Termeni și condiții</a> · <a href="#">Politica de confidențialitate</a> · <a href="#">Cookie-uri</a>
 </footer>
-
+<script>
 <!-- TABBAR -->
 <nav class="tabbar" role="tablist" aria-label="Navigare principală">
   <button class="tablink active" data-go="home" type="button">
@@ -441,16 +441,15 @@ input:invalid,textarea:invalid,select:invalid{border-color:var(--green) !importa
   <button class="tablink" data-go="dashboard" data-panel="menus" type="button">
     <span class="ico"><svg viewBox="0 0 24 24"><path d="M4 6h16v2H4zM4 11h16v2H4zM4 16h10v2H4z"/></svg></span>Meniuri
   </button>
-  <button class="tablink" data-go="dashboard" data-panel="chat" type="button">
+  <button class="tablink" data-go="dashboard" data-panel="chat" type="button"
     <span class="ico"><svg viewBox="0 0 24 24"><path d="M4 5h16v10H7l-3 3V5z"/></svg></span>Chat
   </button>
   <button class="tablink" data-go="profile" type="button">
-    <span class="ico"><svg viewBox="0 0 24 24"><path d="M12 12a5 5 0 1 0-5-5 5 5 0 0 0 5 5Zm0 2c-5 0-9 2.5-9 5v1h18v-1c0-2.5-4-5-9-5Z"/></svg></span>Profil
-  </button>
+    <span class="ico"><svg viewBox="0 0 24 24"><path d="M12 12a5 5 0 1 0-5-5 5 5 0 0 0 5 5Zm0 2c-5 0-9 2.5-9 5v1h18v-1c0-2.5-4-5-9-5Z"/></svg></span>Profil></button>
 </nav>
-<script>
 <!-- Toast -->
-<div id="toast" class="toast" role="status" aria-live="polite"></div>
+<div id="toast" class="toast" role="status" aria-live="polite">
+</div>
 
   // ===== Storage shim (fără să-ți șteargă datele la fiecare load) =====
 const store = (() => {
