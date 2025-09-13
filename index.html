@@ -306,6 +306,28 @@ input:invalid,textarea:invalid,select:invalid{border-color:var(--green) !importa
     grid-column:1 / -1;
   }
 }
+  .btn.danger{ background:var(--danger); color:#fff }
+.btn.danger:hover{ filter:saturate(1.05) }
+
+@media (max-width:640px){
+  #logoutBtnDash{ width:100% }        /* pe mobil, full-width dacă e pe rând separat */
+}
+  /* header pentru cardul de profil + buton logout */
+.card-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+  margin-bottom:10px;
+}
+.btn.danger{ background:var(--danger); color:#fff }
+.btn.danger:hover{ filter:saturate(1.05) }
+
+/* pe mobil, butonul devine full-width sub titlu */
+@media (max-width:640px){
+  #profile .card-head{ flex-wrap:wrap }
+  #logoutBtnProfile{ width:100% }
+}
   
 </style>
 </head>
@@ -445,9 +467,12 @@ input:invalid,textarea:invalid,select:invalid{border-color:var(--green) !importa
         <!-- ORDERS -->
         <div class="panel show" id="panel-orders">
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;gap:8px;flex-wrap:wrap">
-            <h3 style="margin:0">Comenzi</h3>
-            <button id="newOrderBtn" class="btn gold">+ Cerere nouă</button>
-          </div>
+  <h3 style="margin:0">Comenzi</h3>
+  <div style="display:flex;gap:8px;flex-wrap:wrap">
+    <button id="logoutBtnDash" class="btn danger" type="button">Deconectare</button>
+    <button id="newOrderBtn" class="btn gold" type="button">+ Cerere nouă</button>
+  </div>
+  </div>
           <div id="ordersList" class="list"></div>
         </div>
 
@@ -504,10 +529,11 @@ input:invalid,textarea:invalid,select:invalid{border-color:var(--green) !importa
 
   <!-- PROFILE -->
   <section class="route" id="profile">
-    <div class="card">
-      <h3>Profil</h3>
-      <div id="profileCard"></div>
-    </div>
+    <div class="card-head">
+  <h3 style="margin:0">Profil</h3>
+  <button id="logoutBtnProfile" class="btn danger" type="button">Deconectare</button>
+</div>
+<div id="profileCard"></div>
   </section>
 </main>
 
@@ -735,6 +761,7 @@ $('#profileForm')?.addEventListener('submit', e=>{
   state.user.phone=$('#profilePhone').value; state.user.role=$('#profileRole').value;
   localStorage.setItem('bp_user',JSON.stringify(state.user)); updateAuthUI(); renderProfile(); alert('Profil actualizat');
 });
+  document.getElementById('logoutBtnDash')?.addEventListener('click', logout, {passive:true});
 
 /* ---------- SIDE EFFECTS ---------- */
 $$('.sidebar .tab').forEach(b=>b.addEventListener('click',()=>$$('.tablink').forEach(t=>t.classList.toggle('active', t.dataset.go==='dashboard'))));
