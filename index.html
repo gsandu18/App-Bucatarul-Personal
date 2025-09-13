@@ -183,107 +183,50 @@ input:invalid,textarea:invalid,select:invalid{border-color:var(--green) !importa
   .grid{grid-template-columns:1fr}
   .scroller{grid-auto-columns:90%}
 }
-  /* ===== OPTIMIZARE RESPONSIVE AUTENTIFICARE ===== */
+/* ===== OPTIMIZARE RESPONSIVE AUTENTIFICARE ===== */
 @media (max-width:640px){
-
-  /* card login mai aerisit */
-  #auth .card{
-    padding:20px 16px;
-    border-radius:18px;
-  }
-
-  /* câmpurile pe toată lățimea */
-  #auth input,
-  #auth select,
-  #auth button{
-    width:100%;
-    margin-bottom:10px;
-    font-size:16px;
-  }
-
-  /* butoanele Login / Creează cont cu spațiere mai bună */
-  #tabLoginBtn, #tabSignupBtn{
-    flex:1;
-    padding:10px 0;
-    font-size:15px;
-  }
-
-  /* text mic sub form */
-  #auth p{
-    font-size:13px;
-    text-align:center;
-  }
-
-  /* footer legal compact */
-  footer.card{
-    font-size:13px;
-    line-height:1.4;
-    padding:18px 12px;
-  }
+  #auth .card{ padding:20px 16px; border-radius:18px; }
+  #auth input, #auth select, #auth button{ width:100%; margin-bottom:10px; font-size:16px; }
+  #tabLoginBtn, #tabSignupBtn{ flex:1; padding:10px 0; font-size:15px; }
+  #auth p{ font-size:13px; text-align:center; }
+  footer.card{ font-size:13px; line-height:1.4; padding:18px 12px; }
 }
-  /* ===== MOBILE FIRST TWEAKS (<=640px) ===== */
+/* ===== MOBILE FIRST TWEAKS (<=640px) ===== */
 @media (max-width:640px){
-
-  /* container & spațiere */
   .container{ width:min(100%,94%); }
   .route{ padding:12px 0 100px; }
   .card{ padding:14px; border-radius:14px; }
-
-  /* header */
   .header .wrap{ padding:10px 0; }
   .brand h1{ font-size:18px; line-height:1.1; }
   .btn{ padding:10px 12px; }
   .btn.outline,.btn.gold{ border-radius:14px; }
-
-  /* hero */
   .hero{ grid-template-columns:1fr; gap:12px; margin:12px 0; }
   .hero .image{ border-radius:16px; }
   .hero .image img{ aspect-ratio:16/9; object-fit:cover; }
   .hero h2{ font-size:clamp(22px,6vw,32px); }
   .pills{ gap:6px; }
   .pill{ padding:8px 10px; font-size:13px; }
-
-  /* formulare – o coloană, butoane full width */
-  #menuForm,
-  #eventForm,
-  #chatForm,
-  #quickOrderForm{ gap:8px; }
-  #menuForm input,
-  #eventForm input,
-  #quickOrderForm input,
-  #quickOrderForm select{ width:100%; }
-  #quickOrderForm .btn.primary,
-  #menuForm .btn.primary{ width:100%; }
-
-  /* grid-uri -> auto-fit */
+  #menuForm, #eventForm, #chatForm, #quickOrderForm{ gap:8px; }
+  #menuForm input, #eventForm input, #quickOrderForm input, #quickOrderForm select{ width:100%; }
+  #quickOrderForm .btn.primary, #menuForm .btn.primary{ width:100%; }
   .grid{ grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:10px; }
   .chef .pic{ aspect-ratio:4/3; border-radius:12px; }
-
-  /* galerie & testimoniale – swipe fluid */
   .scroller{ grid-auto-columns:88%; }
   .testi-grid{ grid-auto-flow:column; grid-auto-columns:85%; overflow:auto; scroll-snap-type:x mandatory; gap:10px; }
   .testi{ scroll-snap-align:center; }
-
-  /* dashboard layout în coloană */
   .stack{ grid-template-columns:1fr; gap:12px; }
   .sidebar .tab{ padding:10px; font-size:14px; }
-
-  /* chat viewport fix */
   #chatMessages{ height:220px; }
-
-  /* tabbar: icon + text mic, cu safe-area */
   .tabbar{ height:80px; padding-bottom:calc(env(safe-area-inset-bottom,0px) + 8px); }
   .tabbar button{ font-size:12px; gap:4px; padding:8px 2px; }
   .tabbar .ico{ width:20px; height:20px; }
 }
 
-/* ===== micro-fix: imaginile care pică se văd corect în card ===== */
+/* altele */
 .chef .pic img{ width:100%; height:100%; object-fit:cover; }
 .snap img{ width:100%; height:100%; object-fit:cover; }
-
-/* ===== scrolling fin pentru carusele pe iOS ===== */
 .scroller, .testi-grid{ -webkit-overflow-scrolling:touch; scroll-behavior:smooth; }
-  .btn.danger{background:transparent;border:1px solid var(--danger);color:var(--danger)}
+.btn.danger{background:transparent;border:1px solid var(--danger);color:var(--danger)}
 .btn.danger:hover{background:color-mix(in srgb, var(--danger) 12%, transparent)}
 @media (max-width:640px){ #logoutBtnProfile{width:100%} }
 </style>
@@ -299,16 +242,17 @@ input:invalid,textarea:invalid,select:invalid{border-color:var(--green) !importa
       </div>
     </div>
     <div class="actions">
-  <!-- Toggle tema -->
-  <button id="themeBtn" class="btn theme-toggle" aria-pressed="false" title="Comută tema">
-    <span id="themeIcon" aria-hidden="true">☀️</span><span id="themeLabel">Light</span>
-  </button>
+      <!-- Toggle tema -->
+      <button id="themeBtn" class="btn theme-toggle" aria-pressed="false" title="Comută tema">
+        <span id="themeIcon" aria-hidden="true">☀️</span><span id="themeLabel">Light</span>
+      </button>
 
-  <!-- Autentificare (se ascunde când e logat) -->
-  <button class="btn outline" data-route="auth" id="authBtn">Autentificare</button>
+      <!-- Autentificare (se ascunde când e logat) -->
+      <button class="btn outline" data-route="auth" id="authBtn">Autentificare</button>
 
-  <!-- Deconectare (ASCUNS implicit; se vede DOAR în Dashboard) -->
-  <button class="btn outline" id="logoutBtn" style="display:none">Deconectare</button>      
+      <!-- Deconectare (ASCUNS implicit; se vede DOAR în Dashboard) -->
+      <button class="btn outline" id="logoutBtn" style="display:none">Deconectare</button>      
+    </div>
   </div>
 </header>
 
@@ -389,15 +333,15 @@ input:invalid,textarea:invalid,select:invalid{border-color:var(--green) !importa
         <button class="btn outline" id="tabLoginBtn">Login</button>
         <button class="btn outline" id="tabSignupBtn">Creează cont</button>
       </div>
+
       <div id="tabLogin">
-  <form id="loginForm">
-    <label>Email <input type="email" name="email" required></label>
-    <label>Parolă <input type="password" name="password" required></label>
-    <button class="btn primary" type="submit">Autentificare</button>
-  </form>
-</div>
+        <form id="loginForm">
+          <label>Email <input type="email" name="email" required></label>
+          <label>Parolă <input type="password" name="password" required></label>
+          <button class="btn primary" type="submit">Autentificare</button>
         </form>
       </div>
+
       <div id="tabSignup" style="display:none">
         <form id="signupForm">
           <label>Nume <input name="name" required></label>
@@ -409,6 +353,7 @@ input:invalid,textarea:invalid,select:invalid{border-color:var(--green) !importa
           <button class="btn gold" type="submit">Creează cont</button>
         </form>
       </div>
+
       <p style="color:var(--muted);font-size:13px;margin-top:8px">Demo: stochează datele local (LocalStorage).</p>
     </div>
   </section>
@@ -526,7 +471,6 @@ input:invalid,textarea:invalid,select:invalid{border-color:var(--green) !importa
 /* ---------- THEME INIT + TOGGLE ---------- */
 (function(){
   const saved = localStorage.getItem('bp_theme');
-  const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
   const initial = saved ?? 'light'; // pornește în Light
   document.documentElement.setAttribute('data-theme', initial);
 
@@ -560,8 +504,9 @@ const state={
   menus: JSON.parse(localStorage.getItem('bp_menus')||'[]')
 };
 
-/* ---------- ROUTING ---------- */
 let currentRoute = 'home';
+
+/* ---------- ROUTING ---------- */
 function showRoute(name){
   currentRoute = name;
   Object.values(routes).forEach(id=>$(id).classList.remove('show'));
@@ -571,17 +516,15 @@ function showRoute(name){
   $$('.tablink').forEach(b=>b.classList.toggle('active', b.dataset.go===name));
   toggleHeaderButtons();
 }
-  Object.values(routes).forEach(id=>$(id).classList.remove('show'));
-  $(routes[name]).classList.add('show');
-  if(name==='dashboard') renderDashboard();
-  if(name==='profile') renderProfile();
-  $$('.tablink').forEach(b=>b.classList.toggle('active', b.dataset.go===name));
-}
+
+/* link-uri de rutare */
 $$('[data-route]').forEach(b=>b.onclick=(e)=>{e.preventDefault(); showRoute(b.dataset.route);});
 $$('.tablink').forEach(b=>b.onclick=()=>{
   showRoute(b.dataset.go);
   if(b.dataset.panel){ setPanel(b.dataset.panel); }
 });
+
+/* ---------- PANELS ---------- */
 function setPanel(name){
   Object.values(panels).forEach(id=>$(id).classList.remove('show'));
   $(panels[name]).classList.add('show');
@@ -589,22 +532,39 @@ function setPanel(name){
 }
 $$('.sidebar .tab').forEach(t=>t.onclick=()=>setPanel(t.dataset.panel));
 
+/* ---------- HEADER BUTTONS ---------- */
+function toggleHeaderButtons(){
+  const authBtn = document.getElementById('authBtn');
+  const logoutBtn = document.getElementById('logoutBtn');
+  const dashBtn  = document.getElementById('hdrDashBtn'); // poate nu există încă
+
+  if(authBtn) authBtn.style.display = state.user ? 'none' : '';
+
+  if(logoutBtn) logoutBtn.style.display = (state.user && currentRoute === 'dashboard') ? '' : 'none';
+
+  if(dashBtn)  dashBtn.style.display = (state.user?.role === 'chef') ? '' : 'none';
+}
+
 /* ---------- AUTH UI ---------- */
 function updateAuthUI(){
-  $('#roleBadge') && ($('#roleBadge').textContent = 'Rol: ' + (state.user?.role || '-'));
-  toggleHeaderButtons(); 
-  // Buton Dashboard doar pentru CHEF în header
+  if($('#roleBadge')) $('#roleBadge').textContent = 'Rol: ' + (state.user?.role || '-');
+
+  // Buton Dashboard doar pentru CHEF în header (creat dinamic)
   const actions = document.querySelector('.header .actions');
-  const id='hdrDashBtn'; const exists=document.getElementById(id);
+  const id='hdrDashBtn'; let exists=document.getElementById(id);
   if(state.user?.role==='chef'){
     if(!exists){
       const b=document.createElement('button');
       b.id=id; b.className='btn gold'; b.textContent='Dashboard';
       b.onclick=()=>{ showRoute('dashboard'); setPanel('orders'); };
       actions.appendChild(b);
+      exists=b;
     }
-  }else{ exists && exists.remove(); }
+  }else if(exists){ exists.remove(); }
+
+  toggleHeaderButtons();
 }
+
 $('#tabLoginBtn').onclick=()=>{ $('#tabLogin').style.display='block'; $('#tabSignup').style.display='none'; };
 $('#tabSignupBtn').onclick=()=>{ $('#tabLogin').style.display='none'; $('#tabSignup').style.display='block'; };
 
@@ -628,6 +588,16 @@ $('#signupForm')?.addEventListener('submit', e=>{
   updateAuthUI(); showRoute('dashboard');
 });
 
+/* ---------- LOGOUT ---------- */
+function logout(){
+  state.user = null;
+  localStorage.removeItem('bp_user');
+  updateAuthUI();
+  showRoute('home');
+}
+document.getElementById('logoutBtn')?.addEventListener('click', logout);
+document.getElementById('logoutBtnProfile')?.addEventListener('click', logout);
+
 /* ---------- QUICK ORDER ---------- */
 $('#quickOrderForm')?.addEventListener('submit', e=>{
   e.preventDefault();
@@ -642,18 +612,19 @@ function renderDashboard(){
   updateAuthUI();
 
   // ORDERS
-  const list=$('#ordersList'); list.innerHTML='';
-  const visible=(state.user?.role==='chef')?state.orders:state.orders.filter(o=>o.email===state.user?.email||!state.user);
-  if(visible.length===0){ list.innerHTML='<p style="color:#8fa0a8">Nu există comenzi.</p>'; }
-  visible.forEach(o=>{
-    const el=document.createElement('div'); el.className='item';
-    el.innerHTML=`
-      ${o.img?`<div style="aspect-ratio:16/9;border-radius:12px;overflow:hidden;margin:-2px -2px 8px;border:1px solid #e3ece7"><img src="${o.img}" style="width:100%;height:100%;object-fit:cover" alt=""></div>`:''}
-      <div><strong>${o.tip||'Comandă'}</strong> · <span style="color:#96a3aa">${o.oras||'-'} · ${o.data||''}</span></div>
-      <div style="color:#4b5b57">${o.nume||'-'} — ${o.email||''}</div>
-      <span class="status">${o.status}</span>`;
-    list.appendChild(el);
-  });
+  const list=$('#ordersList'); if(list){ list.innerHTML='';
+    const visible=(state.user?.role==='chef')?state.orders:state.orders.filter(o=>o.email===state.user?.email||!state.user);
+    if(visible.length===0){ list.innerHTML='<p style="color:#8fa0a8">Nu există comenzi.</p>'; }
+    visible.forEach(o=>{
+      const el=document.createElement('div'); el.className='item';
+      el.innerHTML=`
+        ${o.img?`<div style="aspect-ratio:16/9;border-radius:12px;overflow:hidden;margin:-2px -2px 8px;border:1px solid #e3ece7"><img src="${o.img}" style="width:100%;height:100%;object-fit:cover" alt=""></div>`:''}
+        <div><strong>${o.tip||'Comandă'}</strong> · <span style="color:#96a3aa">${o.oras||'-'} · ${o.data||''}</span></div>
+        <div style="color:#4b5b57">${o.nume||'-'} — ${o.email||''}</div>
+        <span class="status">${o.status}</span>`;
+      list.appendChild(el);
+    });
+  }
 
   // MENUS
   const ml=$('#menusList'); if(ml){ ml.innerHTML='';
@@ -724,73 +695,15 @@ function renderProfile(){
   if(!state.user){ wrap.innerHTML='<p style="color:#a8b6be">Neautentificat.</p>'; return; }
   wrap.innerHTML=`<div class="item"><strong>${state.user.name}</strong><br>${state.user.email}<br><span style="color:#5e6a6e">${state.user.city||''} ${state.user.phone?('· '+state.user.phone):''}</span><br><span class="badge">Rol: ${state.user.role}</span></div>`;
 }
-$('#profileForm')?.addEventListener('submit', e=>{
-  e.preventDefault(); if(!state.user) return;
-  state.user.name=$('#profileName').value; state.user.city=$('#profileCity').value;
-  state.user.phone=$('#profilePhone').value; state.user.role=$('#profileRole').value;
-  localStorage.setItem('bp_user',JSON.stringify(state.user)); updateAuthUI(); renderProfile(); alert('Profil actualizat');
-});
 
-  function logout(){
-  state.user = null;
-  localStorage.removeItem('bp_user');
+/* ---------- INIT ---------- */
+document.getElementById('year')?.textContent = new Date().getFullYear();
+window.addEventListener('DOMContentLoaded', ()=>{
+  // la încărcare, sincronizează UI cu starea curentă
   updateAuthUI();
   showRoute('home');
-}
-
-function renderProfile(){
-  const wrap = $('#profileCard');
-  if(!wrap) return;
-  wrap.innerHTML = '';
-
-  if(!state.user){
-    wrap.innerHTML = '<p style="color:#a8b6be">Neautentificat.</p>';
-    return;
-  }
-  let currentRoute = 'home';
-
-function toggleHeaderButtons(){
-  const authBtn = document.querySelector('[data-route="auth"]');
-  const logoutBtn = document.getElementById('logoutBtn');       // din header
-  const dashBtn  = document.getElementById('hdrDashBtn');        // butonul Dashboard (pt. chefi)
-
-  // Autentificare: se ascunde dacă e logat
-  if(authBtn) authBtn.style.display = state.user ? 'none' : '';
-
-  // Deconectare: DOAR când e logat ȘI se află în dashboard
-  if(logoutBtn) logoutBtn.style.display = (state.user && currentRoute === 'dashboard') ? '' : 'none';
-
-  // Dashboard: doar pentru role=chef
-  if(dashBtn)  dashBtn.style.display = (state.user?.role === 'chef') ? '' : 'none';
-}
-
-  wrap.innerHTML = `
-    <div class="item">
-      <strong>${state.user.name}</strong><br>
-      ${state.user.email}<br>
-      <span style="color:#5e6a6e">${state.user.city||''} ${state.user.phone?('· '+state.user.phone):''}</span><br>
-      <span class="badge">Rol: ${state.user.role}</span>
-    </div>
-    <div style="margin-top:12px">
-      <button class="btn danger" id="logoutBtnProfile">Deconectare</button>
-    </div>
-  `;
-
-  // click pe Deconectare în profil
-  $('#logoutBtnProfile').onclick = logout;
-}
-  
-
-/* ---------- SIDE EFFECTS ---------- */
-$$('.sidebar .tab').forEach(b=>b.addEventListener('click',()=>$$('.tablink').forEach(t=>t.classList.toggle('active', t.dataset.go==='dashboard'))));
-document.getElementById('year')?.textContent = new Date().getFullYear();
-  Object.values(routes).forEach(id=>$(id).classList.remove('show'));
-  $(routes[name]).classList.add('show');
-  if(name==='dashboard') renderDashboard();
-  if(name==='profile') renderProfile();
-  $$('.tablink').forEach(b=>b.classList.toggle('active', b.dataset.go===name));
-  toggleHeaderButtons();                            // <— nou
-}
-  
+  setPanel('orders');
+});
+</script>
 </body>
 </html>
