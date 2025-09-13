@@ -453,327 +453,211 @@ input:invalid,textarea:invalid,select:invalid{border-color:var(--green) !importa
 <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
 <script>
-/* ===== Global error guard: arată erorile ca toast (ca să nu „moară” scriptul) ===== */
-window.addEventListener('error', (e)=>{ try{ const t=document.getElementById('toast'); if(t){ t.textContent = 'Eroare: ' + e.message; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'), 3000); } }catch{} });
+// ===== Storage shim (funcționează și când iOS/Safari blochează localStorage în iframe) =====
+const store = (() => {
+  try {
+    const t = '__test__' + Math.random();
+    window.localStorage.setItem(t,'1');
+    window.localStorage.removeItem(t);
+    return window.localStorage;
+  } catch (e) {
+    const mem = {};
+    return {
+      getItem:k => (k in mem ? mem[k] : null),
+      setItem:(k,v) => { mem[k] = String(v) },
+      removeItem:k => { delete mem[k] }
+    };
+  }
+})();
 
-document.addEventListener('DOMContentLoaded', ()=>{
+// ===== Helpers =====
+const $=(s,c=document)=>c.querySelector(s), $$=(s,c=document)=>[...c.querySelectorAll(s)];
+const routes={home:'#home',auth:'#auth',dashboard:'#dashboard',profile:'#profile'};
+const panels={orders:'#panel-orders',menus:'#panel-menus',chat:'#panel-chat',calendar:'#panel-calendar',settings:'#panel-settings'};
 
-  /* ================= THEME ================= */
-  (function(){
-    const saved = localStorage.getItem('bp_theme') ?? 'light';
-    document.documentElement.setAttribute('data-theme', saved);
-    const themeBtn = document.getElementById('themeBtn');
-    const themeIcon = document.getElementById('themeIcon');
-    const themeLabel = document.getElementById('themeLabel');
-    function upd(){ const cur=document.documentElement.getAttribute('data-theme');
-      if(themeIcon) themeIcon.textContent = (cur==='dark'?'🌙':'☀️');
-      if(themeLabel) themeLabel.textContent = (cur==='dark'?'Dark':'Light');
-      themeBtn?.setAttribute('aria-pressed', cur==='dark');
-    }
-    themeBtn?.addEventListener('click', ()=>{
-      const cur=document.documentElement.getAttribute('data-theme');
-      const next=(cur==='dark')?'light':'dark';
-      document.documentElement.setAttribute('data-theme', next);
-      localStorage.setItem('bp_theme', next);
-      upd();
-    });
+// ===== State (folosește store în loc de localStorage) =====
+const state={
+  user: JSON.parse(store.getItem('bp_user')||'null'),
+  orders: JSON.parse(store.getItem('bp_orders')||'[]'),
+  messages: JSON.parse(store.getItem('bp_chat')||'[]'),
+  events: JSON.parse(store.getItem('bp_events')||'[]'),
+  menus: JSON.parse(store.getItem('bp_menus')||'[]')
+};
+let currentRoute='home';
+function persistOrders(){ try{ store.setItem('bp_orders', JSON.stringify(state.orders)); }catch{} }
+function toast(msg){ const t=$('#toast'); if(!t){ alert(msg); return; } t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'), 2200); }
+
+// ===== Theme init sigur =====
+(function(){
+  const saved = store.getItem('bp_theme') ?? 'light';
+  document.documentElement.setAttribute('data-theme', saved);
+  const btn = $('#themeBtn'), icon = $('#themeIcon'), label=$('#themeLabel');
+  function upd(){ const cur=document.documentElement.getAttribute('data-theme'); if(icon) icon.textContent=(cur==='dark'?'🌙':'☀️'); if(label) label.textContent=(cur==='dark'?'Dark':'Light'); btn?.setAttribute('aria-pressed', cur==='dark'); }
+  btn?.addEventListener('click', ()=>{
+    const cur=document.documentElement.getAttribute('data-theme');
+    const next=(cur==='dark')?'light':'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    try{ store.setItem('bp_theme', next); }catch{}
     upd();
-  })();
+  }, {passive:true});
+  upd();
+})();
 
-  /* ================= HELPERS/STATE ================= */
-  const $=(s,c=document)=>c.querySelector(s), $$=(s,c=document)=>[...c.querySelectorAll(s)];
-  const routes={home:'#home',auth:'#auth',dashboard:'#dashboard',profile:'#profile'};
-  const panels={orders:'#panel-orders',menus:'#panel-menus',chat:'#panel-chat',calendar:'#panel-calendar',settings:'#panel-settings'};
-  const state={
-    user: JSON.parse(localStorage.getItem('bp_user')||'null'),
-    orders: JSON.parse(localStorage.getItem('bp_orders')||'[]'),
-    messages: JSON.parse(localStorage.getItem('bp_chat')||'[]'),
-    events: JSON.parse(localStorage.getItem('bp_events')||'[]'),
-    menus: JSON.parse(localStorage.getItem('bp_menus')||'[]')
-  };
-  let currentRoute='home';
+// ===== Routing core =====
+function toggleHeaderButtons(){
+  const authBtn = $('#authBtn');
+  const logoutBtn = $('#logoutBtn');
+  let dashBtn = $('#hdrDashBtn');
 
-  function persistOrders(){
-    try{ localStorage.setItem('bp_orders', JSON.stringify(state.orders)); }
-    catch(e){ console.error('Nu pot salva comenzi în localStorage:', e); }
+  if(state.user?.role==='chef' && !dashBtn){
+    dashBtn=document.createElement('button');
+    dashBtn.id='hdrDashBtn'; dashBtn.className='btn gold'; dashBtn.type='button'; dashBtn.textContent='Dashboard';
+    dashBtn.onclick=()=>{ showRoute('dashboard'); setPanel('orders'); };
+    $('.header .actions')?.appendChild(dashBtn);
+  }
+  if(state.user?.role!=='chef' && dashBtn){ dashBtn.remove(); }
+
+  if(authBtn) authBtn.style.display = state.user ? 'none' : '';
+  if(logoutBtn) logoutBtn.style.display = (state.user && currentRoute==='dashboard') ? '' : 'none';
+}
+
+function showRoute(name){
+  currentRoute=name;
+  Object.values(routes).forEach(id=>$(id)?.classList.remove('show'));
+  $(routes[name])?.classList.add('show');
+
+  // acces protejat
+  if((name==='dashboard'||name==='profile') && !state.user){
+    toast('Autentifică-te pentru a accesa această secțiune.');
+    $(routes[name])?.classList.remove('show'); $(routes.auth)?.classList.add('show'); currentRoute='auth';
   }
 
-  function toast(msg){
-    const t=$('#toast'); if(!t) { alert(msg); return; }
-    t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'), 2200);
-  }
+  if(currentRoute==='dashboard') renderDashboard();
+  if(currentRoute==='profile') renderProfile();
 
-  /* ================= ROUTING/TABS ================= */
-  function showRoute(name){
-    currentRoute=name;
-    Object.values(routes).forEach(id=>$(id)?.classList.remove('show'));
-    $(routes[name])?.classList.add('show');
+  $$('.tablink').forEach(b=>b.classList.toggle('active', b.dataset.go===currentRoute));
+  toggleHeaderButtons();
+}
 
-    // Guard: dashboard/profile necesită login
-    if((name==='dashboard'||name==='profile') && !state.user){
-      toast('Autentifică-te pentru a accesa această secțiune.');
-      $(routes[name])?.classList.remove('show');
-      $(routes.auth)?.classList.add('show');
-      currentRoute='auth';
-    }
-
-    if(currentRoute==='dashboard') renderDashboard();
-    if(currentRoute==='profile') renderProfile();
-
-    $$('.tablink').forEach(b=>{
-      const active = b.dataset.go===currentRoute;
-      b.classList.toggle('active', active);
-    });
-    toggleHeaderButtons();
-  }
-
-  $$('.tablink').forEach(b=>b.addEventListener('click', ()=>{
-    const target=b.dataset.go; const panel=b.dataset.panel;
-    showRoute(target); if(panel) setPanel(panel);
-  }));
-
-  $$('[data-route]').forEach(b=>b.addEventListener('click',(e)=>{
-    e.preventDefault(); showRoute(b.dataset.route);
-  }));
-
-  function setPanel(name){
-    Object.values(panels).forEach(id=>$(id)?.classList.remove('show'));
-    $(panels[name])?.classList.add('show');
-    $$('.sidebar .tab').forEach(t=>t.classList.toggle('active', t.dataset.panel===name));
-  }
-  $$('.sidebar .tab').forEach(t=>t.addEventListener('click',()=>setPanel(t.dataset.panel)));
-
-  /* ================= HEADER BUTTONS ================= */
-  function toggleHeaderButtons(){
-    const authBtn = document.getElementById('authBtn');
-    const logoutBtn = document.getElementById('logoutBtn');
-    let dashBtn = document.getElementById('hdrDashBtn');
-
-    // creez dinamic buton Dashboard pt. chefi
-    if(state.user?.role==='chef' && !dashBtn){
-      dashBtn=document.createElement('button');
-      dashBtn.id='hdrDashBtn'; dashBtn.className='btn gold'; dashBtn.type='button'; dashBtn.textContent='Dashboard';
-      dashBtn.onclick=()=>{ showRoute('dashboard'); setPanel('orders'); };
-      document.querySelector('.header .actions')?.appendChild(dashBtn);
-    }
-    if(state.user?.role!=='chef' && dashBtn){ dashBtn.remove(); }
-
-    if(authBtn) authBtn.style.display = state.user ? 'none' : '';
-    if(logoutBtn) logoutBtn.style.display = (state.user && currentRoute==='dashboard') ? '' : 'none';
-  }
-  document.getElementById('logoutBtn')?.addEventListener('click', logout);
-
-  /* ================= AUTH ================= */
-  document.getElementById('tabLoginBtn')?.addEventListener('click', ()=>{
-    $('#tabLogin').style.display='block'; $('#tabSignup').style.display='none';
-  });
-  document.getElementById('tabSignupBtn')?.addEventListener('click', ()=>{
-    $('#tabLogin').style.display='none'; $('#tabSignup').style.display='block';
-  });
-
-  document.getElementById('loginForm')?.addEventListener('submit', e=>{
+// ===== Delegare UNICĂ pentru click/touch (rute + taburi) =====
+document.addEventListener('click', (e)=>{
+  const r = e.target.closest('[data-route]');
+  if(r){ e.preventDefault(); showRoute(r.dataset.route); return; }
+  const tl = e.target.closest('.tablink');
+  if(tl){
     e.preventDefault();
-    const {email,password}=Object.fromEntries(new FormData(e.target).entries());
-    const users=JSON.parse(localStorage.getItem('bp_users')||'[]');
-    const u=users.find(x=>x.email===email && x.password===password);
-    if(!u){ toast('Date invalide.'); return; }
-    state.user=u; localStorage.setItem('bp_user', JSON.stringify(u));
-    toast('Bun venit, ' + (u.name||'chef') + '!');
-    updateAuthUI();
-    showRoute('dashboard'); setPanel('orders');
+    showRoute(tl.dataset.go);
+    if(tl.dataset.panel) setPanel(tl.dataset.panel);
+    return;
+  }
+  const sb = e.target.closest('.sidebar .tab');
+  if(sb){ e.preventDefault(); setPanel(sb.dataset.panel); return; }
+}, {passive:false});
+
+// ===== Logout (header + profil) =====
+$('#logoutBtn')?.addEventListener('click', logout, {passive:true});
+$('#logoutBtnProfile')?.addEventListener('click', logout, {passive:true});
+function logout(){
+  state.user=null; try{ store.removeItem('bp_user'); }catch{}
+  updateAuthUI(); showRoute('home');
+}
+
+// ===== Auth tab buttons =====
+$('#tabLoginBtn')?.addEventListener('click', ()=>{ $('#tabLogin').style.display='block'; $('#tabSignup').style.display='none'; }, {passive:true});
+$('#tabSignupBtn')?.addEventListener('click', ()=>{ $('#tabLogin').style.display='none'; $('#tabSignup').style.display='block'; }, {passive:true});
+
+// ===== Auth forms (folosesc store) =====
+$('#loginForm')?.addEventListener('submit', e=>{
+  e.preventDefault();
+  const {email,password}=Object.fromEntries(new FormData(e.target).entries());
+  const users=JSON.parse(store.getItem('bp_users')||'[]');
+  const u=users.find(x=>x.email===email && x.password===password);
+  if(!u){ toast('Date invalide.'); return; }
+  state.user=u; try{ store.setItem('bp_user', JSON.stringify(u)); }catch{}
+  toast('Bun venit, ' + (u.name||'chef') + '!');
+  updateAuthUI(); showRoute('dashboard'); setPanel('orders');
+});
+
+$('#signupForm')?.addEventListener('submit', e=>{
+  e.preventDefault();
+  const d=Object.fromEntries(new FormData(e.target).entries());
+  const users=JSON.parse(store.getItem('bp_users')||'[]');
+  if(users.some(u=>u.email===d.email)){ toast('Email existent.'); return; }
+  const nu={id:'u_'+Date.now(), name:d.name, email:d.email, password:d.password, role:d.role, city:'', phone:''};
+  users.push(nu); try{ store.setItem('bp_users', JSON.stringify(users)); store.setItem('bp_user', JSON.stringify(nu)); }catch{}
+  state.user=nu; toast('Cont creat. Bine ai venit!');
+  updateAuthUI(); showRoute('dashboard'); setPanel('orders');
+});
+
+// ===== UI renderers =====
+function updateAuthUI(){ const rb=$('#roleBadge'); if(rb) rb.textContent='Rol: ' + (state.user?.role || '-'); toggleHeaderButtons(); }
+function setPanel(name){
+  Object.values(panels).forEach(id=>$(id)?.classList.remove('show'));
+  $(panels[name])?.classList.add('show');
+  $$('.sidebar .tab').forEach(t=>t.classList.toggle('active', t.dataset.panel===name));
+}
+function renderDashboard(){ updateAuthUI(); renderOrders(); renderMenus(); renderChat(); renderEvents(); }
+function renderOrders(){
+  const list=$('#ordersList'); if(!list) return; list.innerHTML='';
+  const mine=(state.user?.role==='chef')?state.orders:state.orders.filter(o=>o.email===state.user?.email || !state.user);
+  if(mine.length===0){ list.innerHTML='<p style="color:#8fa0a8">Nu există comenzi.</p>'; return; }
+  mine.forEach(o=>{
+    const el=document.createElement('div'); el.className='item';
+    el.innerHTML=`
+      ${o.img?`<div style="aspect-ratio:16/9;border-radius:12px;overflow:hidden;margin:-2px -2px 8px;border:1px solid #e3ece7"><img src="${o.img}" style="width:100%;height:100%;object-fit:cover" alt=""></div>`:''}
+      <div><strong>${o.tip||'Comandă'}</strong> · <span style="color:#96a3aa">${o.oras||'-'} · ${o.data||''}</span></div>
+      <div style="color:#4b5b57">${o.nume||'-'} — ${o.email||''}</div>
+      <span class="status">${o.status||'nou'}</span>`;
+    list.appendChild(el);
   });
-
-  document.getElementById('signupForm')?.addEventListener('submit', e=>{
-    e.preventDefault();
-    const d=Object.fromEntries(new FormData(e.target).entries());
-    const users=JSON.parse(localStorage.getItem('bp_users')||'[]');
-    if(users.some(u=>u.email===d.email)){ toast('Email existent.'); return; }
-    const nu={id:'u_'+Date.now(), name:d.name, email:d.email, password:d.password, role:d.role, city:'', phone:''};
-    users.push(nu); localStorage.setItem('bp_users',JSON.stringify(users));
-    state.user=nu; localStorage.setItem('bp_user',JSON.stringify(nu));
-    toast('Cont creat. Bine ai venit!');
-    updateAuthUI();
-    showRoute('dashboard'); setPanel('orders');
+}
+function renderMenus(){
+  const ml=$('#menusList'); if(!ml) return; ml.innerHTML='';
+  state.menus.forEach(m=>{
+    const c=document.createElement('div'); c.className='card';
+    c.innerHTML=`
+      ${m.imageUrl?`<div style="aspect-ratio:4/3;border-radius:14px;overflow:hidden;margin:-4px -4px 10px;border:1px solid var(--line)">
+        <img src="${m.imageUrl}" style="width:100%;height:100%;object-fit:cover" alt=""></div>`:''}
+      <strong>${m.title}</strong><div style="color:#5e6a6e">Preț: ${m.price} RON</div>`;
+    ml.appendChild(c);
   });
-
-  function logout(){
-    state.user=null; localStorage.removeItem('bp_user');
-    updateAuthUI();
-    showRoute('home');
-  }
-
-  /* ================= UI RENDER ================= */
-  function updateAuthUI(){
-    const rb = document.getElementById('roleBadge');
-    if(rb) rb.textContent = 'Rol: ' + (state.user?.role || '-');
-    toggleHeaderButtons();
-  }
-
-  function renderDashboard(){
-    updateAuthUI();
-    renderOrders(); renderMenus(); renderChat(); renderEvents();
-  }
-
-  function renderOrders(){
-    const list=document.getElementById('ordersList'); if(!list) return;
-    list.innerHTML='';
-    const mine = (state.user?.role==='chef') ? state.orders
-                : state.orders.filter(o=>o.email===state.user?.email || !state.user);
-    if(mine.length===0){ list.innerHTML='<p style="color:#8fa0a8">Nu există comenzi.</p>'; return; }
-    mine.forEach(o=>{
-      const el=document.createElement('div'); el.className='item';
-      el.innerHTML=`
-        ${o.img?`<div style="aspect-ratio:16/9;border-radius:12px;overflow:hidden;margin:-2px -2px 8px;border:1px solid #e3ece7"><img src="${o.img}" style="width:100%;height:100%;object-fit:cover" alt=""></div>`:''}
-        <div><strong>${o.tip||'Comandă'}</strong> · <span style="color:#96a3aa">${o.oras||'-'} · ${o.data||''}</span></div>
-        <div style="color:#4b5b57">${o.nume||'-'} — ${o.email||''}</div>
-        <span class="status">${o.status||'nou'}</span>`;
-      list.appendChild(el);
-    });
-  }
-
-  function renderMenus(){
-    const ml=document.getElementById('menusList'); if(!ml) return; ml.innerHTML='';
-    state.menus.forEach(m=>{
-      const c=document.createElement('div'); c.className='card';
-      c.innerHTML=`
-        ${m.imageUrl?`<div style="aspect-ratio:4/3;border-radius:14px;overflow:hidden;margin:-4px -4px 10px;border:1px solid var(--line)">
-          <img src="${m.imageUrl}" style="width:100%;height:100%;object-fit:cover" alt=""></div>`:''}
-        <strong>${m.title}</strong><div style="color:#5e6a6e">Preț: ${m.price} RON</div>`;
-      ml.appendChild(c);
-    });
-  }
-
-  function renderChat(){
-    const box=document.getElementById('chatMessages'); if(!box) return; box.innerHTML='';
-    state.messages.slice(-60).forEach(m=>{
-      const d=document.createElement('div'); d.className='item';
-      d.innerHTML=`<strong>${m.from}</strong> <span style="color:#8ea1aa">${new Date(m.at).toLocaleString()}</span><br>${m.text}`;
-      box.appendChild(d);
-    });
-    box.scrollTop=box.scrollHeight;
-  }
-
-  function renderEvents(){
-    const ev=document.getElementById('eventsList'); if(!ev) return; ev.innerHTML='';
-    state.events.forEach(e=>{
-      const li=document.createElement('li'); li.className='item';
-      li.innerHTML=`<strong>${e.title}</strong> — ${e.date} ${e.time}`;
-      ev.appendChild(li);
-    });
-  }
-
-  document.getElementById('newOrderBtn')?.addEventListener('click', ()=>{
-    const o={id:'ord_'+Date.now(),tip:'Cerere personalizată',nume:state.user?.name||'Client',email:state.user?.email||'',oras:state.user?.city||'',data:'',status:'nou'};
-    state.orders.unshift(o); persistOrders();
-    toast('Cerere creată.'); notifyChefs('Cerere nouă', 'Ai o cerere personalizată.');
-    renderOrders();
+}
+function renderChat(){
+  const box=$('#chatMessages'); if(!box) return; box.innerHTML='';
+  state.messages.slice(-60).forEach(m=>{
+    const d=document.createElement('div'); d.className='item';
+    d.innerHTML=`<strong>${m.from}</strong> <span style="color:#8ea1aa">${new Date(m.at).toLocaleString()}</span><br>${m.text}`;
+    box.appendChild(d);
+  }); box.scrollTop=box.scrollHeight;
+}
+function renderEvents(){
+  const ev=$('#eventsList'); if(!ev) return; ev.innerHTML='';
+  state.events.forEach(e=>{
+    const li=document.createElement('li'); li.className='item';
+    li.innerHTML=`<strong>${e.title}</strong> — ${e.date} ${e.time}`;
+    ev.appendChild(li);
   });
+}
 
-  /* ================= FORMS ================= */
-  document.getElementById('menuForm')?.addEventListener('submit', e=>{
-    e.preventDefault();
-    const title=document.getElementById('menuTitle').value;
-    const price=Number(document.getElementById('menuPrice').value||0);
-    const imageUrl=(document.getElementById('menuImageUrl')?.value||'').trim();
-    state.menus.push({id:'menu_'+Date.now(), title, price, imageUrl});
-    localStorage.setItem('bp_menus',JSON.stringify(state.menus));
-    e.target.reset(); renderMenus();
-  });
+// ===== Quick order + new order (folosesc store) =====
+$('#quickOrderForm')?.addEventListener('submit', e=>{
+  e.preventDefault();
+  const o=Object.fromEntries(new FormData(e.target).entries());
+  o.id='ord_'+Date.now(); o.status='nou';
+  state.orders.unshift(o); persistOrders();
+  toast('Cerere trimisă! Mulțumim.');
+  e.target.reset();
+  if(currentRoute==='dashboard') renderOrders();
+});
+$('#newOrderBtn')?.addEventListener('click', ()=>{
+  const o={id:'ord_'+Date.now(),tip:'Cerere personalizată',nume:state.user?.name||'Client',email:state.user?.email||'',oras:state.user?.city||'',data:'',status:'nou'};
+  state.orders.unshift(o); persistOrders();
+  toast('Cerere creată.'); renderOrders();
+});
 
-  document.getElementById('chatForm')?.addEventListener('submit', e=>{
-    e.preventDefault();
-    const inp=document.getElementById('chatInput'); const t=inp.value.trim(); if(!t) return;
-    state.messages.push({id:'m_'+Date.now(), from: state.user?.email||'anon', text:t, at:new Date().toISOString()});
-    localStorage.setItem('bp_chat',JSON.stringify(state.messages));
-    inp.value=''; renderChat();
-  });
-
-  document.getElementById('eventForm')?.addEventListener('submit', e=>{
-    e.preventDefault();
-    const date=document.getElementById('eventDate').value;
-    const time=document.getElementById('eventTime').value;
-    const title=document.getElementById('eventTitle').value;
-    state.events.push({id:'e_'+Date.now(),date,time,title});
-    localStorage.setItem('bp_events',JSON.stringify(state.events));
-    e.target.reset(); renderEvents();
-  });
-
-  /* ================= QUICK ORDER (Home) ================= */
-  document.getElementById('quickOrderForm')?.addEventListener('submit', e=>{
-    e.preventDefault();
-    const o=Object.fromEntries(new FormData(e.target).entries());
-    o.id='ord_'+Date.now(); o.status='nou';
-    state.orders.unshift(o); persistOrders();
-    toast('Cerere trimisă! Mulțumim.');
-    notifyChefs('Cerere nouă', `${o.nume||'Client'} din ${o.oras||'-'}`);
-    e.target.reset();
-    if(currentRoute==='dashboard') renderOrders();
-  });
-
-  /* ================= NOTIFICĂRI PT. CHEFI ================= */
-  function askNotifPerm(){ try{
-    if(!('Notification' in window)) return;
-    if(Notification.permission==='default') Notification.requestPermission();
-  }catch{} }
-
-  function ding(){
-    try{
-      const ctx=new (window.AudioContext||window.webkitAudioContext)();
-      const osc=ctx.createOscillator(), g=ctx.createGain();
-      osc.type='sine'; osc.frequency.value=880;
-      g.gain.setValueAtTime(0.001, ctx.currentTime);
-      g.gain.exponentialRampToValueAtTime(0.2, ctx.currentTime+0.02);
-      g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime+0.35);
-      osc.connect(g).connect(ctx.destination);
-      osc.start(); osc.stop(ctx.currentTime+0.4);
-    }catch{}
-  }
-
-  function notifyChefs(title, body){
-    if(state.user?.role==='chef'){
-      showChefBadge((Number(localStorage.getItem('bp_new_for_chef')||0))+1);
-    }
-    if('Notification' in window && Notification.permission==='granted'){
-      new Notification(title, { body });
-    }else{
-      toast(title + ' — ' + body);
-    }
-    ding();
-    // crestem contorul global
-    const n = Number(localStorage.getItem('bp_new_for_chef')||0)+1;
-    localStorage.setItem('bp_new_for_chef', String(n));
-  }
-
-  function showChefBadge(n){
-    let h=document.querySelector('#panel-orders h3'); if(!h) return;
-    let b=document.getElementById('ordersBadge');
-    if(!b){ b=document.createElement('span'); b.id='ordersBadge'; h.appendChild(b); }
-    b.textContent=n; b.style.display = n>0 ? 'inline-block' : 'none';
-  }
-
-  window.addEventListener('storage', (e)=>{
-    if(e.key==='bp_new_for_chef' && state.user?.role==='chef'){
-      const n=Number(localStorage.getItem('bp_new_for_chef')||0);
-      showChefBadge(n); toast('Ai o cerere nouă.'); ding();
-    }
-  });
-
-  document.getElementById('panel-orders')?.addEventListener('click', ()=>{
-    localStorage.setItem('bp_new_for_chef','0'); showChefBadge(0);
-  });
-
-  /* ================= INIT ================= */
-  document.getElementById('year').textContent = new Date().getFullYear();
-  updateAuthUI();
-  showRoute('home');
-  setPanel('orders');
-  askNotifPerm();
-  if(state.user?.role==='chef'){
-    const n=Number(localStorage.getItem('bp_new_for_chef')||0);
-    if(n>0) showChefBadge(n);
-  }
-
-}); // DOMContentLoaded
+// ===== INIT =====
+$('#year')?.textContent = new Date().getFullYear();
+showRoute('home'); setPanel('orders'); updateAuthUI();
 </script>
 </body>
 </html>
