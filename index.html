@@ -510,6 +510,13 @@ input:invalid,textarea:invalid,select:invalid{border-color:var(--green) !importa
 })();
 
 /* ================= HELPERS/STATE ================= */
+  function persistOrders(){
+  try{
+    localStorage.setItem('bp_orders', JSON.stringify(state.orders));
+  }catch(e){
+    console.error('Nu pot salva comenzi în localStorage:', e);
+  }
+}
 const $=(s,c=document)=>c.querySelector(s), $$=(s,c=document)=>[...c.querySelectorAll(s)];
 const routes={home:'#home',auth:'#auth',dashboard:'#dashboard',profile:'#profile'};
 const panels={orders:'#panel-orders',menus:'#panel-menus',chat:'#panel-chat',calendar:'#panel-calendar',settings:'#panel-settings'};
