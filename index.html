@@ -458,7 +458,7 @@ const store = (() => {
   try {
     const t = '__test__' + Math.random();
     window.localStorage.setItem(t,'1');
-    window.localStorage.removeItem(t);
+    localStorage.removeItem('bp_user'); localStorage.removeItem('bp_orders'); localStorage.removeItem('bp_menus'); localStorage.removeItem('bp_chat'); localStorage.removeItem('bp_events');
     return window.localStorage;
   } catch (e) {
     const mem = {};
