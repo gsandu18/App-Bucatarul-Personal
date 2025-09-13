@@ -311,7 +311,9 @@ input:invalid,textarea:invalid,select:invalid{border-color:var(--green) !importa
 
 @media (max-width:640px){
   #logoutBtnDash{ width:100% }        /* pe mobil, full-width dacă e pe rând 
-  
+  /* Panourile din dashboard: doar cel cu .show este vizibil */
+.panel{ display:none }
+.panel.show{ display:block }
 </style>
 </head>
 <body>
@@ -649,6 +651,7 @@ $('#quickOrderForm')?.addEventListener('submit', e=>{
   state.orders.unshift(o); localStorage.setItem('bp_orders',JSON.stringify(state.orders));
   alert('Cerere trimisă!'); e.target.reset(); renderDashboard();
 });
+  showNotification('Cerere nouă', `${o.tip || 'Comandă'} — ${o.nume || ''}`);
 
 /* ---------- DASHBOARD RENDER ---------- */
 function renderDashboard(){
@@ -722,6 +725,9 @@ function renderChat(){
   });
   box.scrollTop=box.scrollHeight;
 }
+  showNotification('Mesaj nou', `${from}: ${text}`);
+  
+  
 
 /* ---------- EVENTS ---------- */
 $('#eventForm')?.addEventListener('submit', e=>{
