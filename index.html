@@ -60,11 +60,8 @@ img{max-width:100%;height:auto;display:block}
   width:42px;height:42px;border-radius:12px;display:grid;place-items:center;font-weight:800;
   background:conic-gradient(from 210deg,var(--gold),#f6e7b2,var(--gold));
   color:#000;
-  box-shadow:0 2px 12px rgba(0,0,0,.15), inset 0 0 0 1.5px rgba(255,255,255,.55);
-}
-[data-theme="dark"] .logo{
-  background:conic-gradient(from 210deg,var(--gold),#f3df9b,var(--gold));
-  color:#141617;
+  box-shadow:0 2px 12px rgba(0,0,0,.15), inset 0 0 0 1.5px rgba(255,255,255,./* cu asta */
+[data-theme="dark"] .btn.outline{background:transparent;border:1px solid var(--line);color:var(--ink)}
   box-shadow:0 2px 12px rgba(0,0,0,.25), inset 0 0 0 1.5px rgba(0,0,0,.25);
 }
 .brand h1{margin:0;font:800 20px/1 Playfair Display,serif;color:var(--ink)}
@@ -654,7 +651,59 @@ $('#newOrderBtn')?.addEventListener('click', ()=>{
   state.orders.unshift(o); persistOrders();
   toast('Cerere creată.'); renderOrders();
 });
+// ===== Persist helpers lipsă =====
+function persistMenus(){ try{ store.setItem('bp_menus', JSON.stringify(state.menus)); }catch{} }
+function persistChat(){ try{ store.setItem('bp_chat', JSON.stringify(state.messages)); }catch{} }
+function persistEvents(){ try{ store.setItem('bp_events', JSON.stringify(state.events)); }catch{} }
 
+// ===== MENUS: submit handler =====
+document.getElementById('menuForm')?.addEventListener('submit', (e)=>{
+  e.preventDefault();
+  const title = document.getElementById('menuTitle')?.value?.trim();
+  const price = Number(document.getElementById('menuPrice')?.value || 0);
+  const imageUrl = document.getElementById('menuImageUrl')?.value?.trim();
+  if(!title || !price){ toast('Completează titlul și prețul.'); return; }
+  state.menus.unshift({ id:'m_'+Date.now(), title, price, imageUrl });
+  persistMenus();
+  toast('Meniu salvat.');
+  e.target.reset();
+  renderMenus();
+}, {passive:false});
+
+// ===== CHAT: submit handler =====
+document.getElementById('chatForm')?.addEventListener('submit', (e)=>{
+  e.preventDefault();
+  const input = document.getElementById('chatInput');
+  const text = input?.value?.trim();
+  if(!text) return;
+  const from = state.user?.name || 'Client';
+  state.messages.push({ id:'msg_'+Date.now(), from, text, at:Date.now() });
+  persistChat();
+  input.value = '';
+  renderChat();
+}, {passive:false});
+
+// ===== CALENDAR: submit handler =====
+document.getElementById('eventForm')?.addEventListener('submit', (e)=>{
+  e.preventDefault();
+  const date = document.getElementById('eventDate')?.value;
+  const time = document.getElementById('eventTime')?.value;
+  const title = document.getElementById('eventTitle')?.value?.trim();
+  if(!date || !time || !title){ toast('Completează data, ora și titlul.'); return; }
+  state.events.unshift({ id:'ev_'+Date.now(), date, time, title });
+  persistEvents();
+  toast('Eveniment adăugat.');
+  e.target.reset();
+  renderEvents();
+}, {passive:false});
+
+// ===== Acces rapid la Auth din header (dacă e nevoie) =====
+document.getElementById('authBtn')?.addEventListener('click', ()=>{
+  showRoute('auth');
+}, {passive:true});
+
+// ===== Securizează tipul butoanelor din formulare fără handler =====
+document.querySelectorAll('form button:not([type])').forEach(b=>b.type='submit');
 // ===== INIT =====
 $('#year')?.textContent = new Date().getFullYear();
 showRoute('home'); setPanel('orders'); updateAuthUI();
