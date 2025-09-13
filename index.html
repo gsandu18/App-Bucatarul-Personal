@@ -267,6 +267,46 @@ input:invalid,textarea:invalid,select:invalid{border-color:var(--green) !importa
   /* în “Comandă rapidă” micșorăm puțin spațiile */
   #home .card h3{ margin-bottom:6px; }
 }
+  /* === Dashboard: 1 coloană + formulare fluide doar pe mobil === */
+@media (max-width:640px){
+  /* pune tot dashboard-ul pe o singură coloană */
+  .stack{
+    grid-template-columns:1fr;
+    gap:16px;
+  }
+  .sidebar{
+    order:2;           /* mută meniul dedesubt dacă vrei */
+    width:100%;
+  }
+
+  /* toate formularele din dashboard devin full width */
+  #dashboard form,
+  #dashboard input,
+  #dashboard select,
+  #dashboard textarea,
+  #dashboard button{
+    width:100%;
+  }
+
+  /* câmpurile din “Meniurile mele”, “Chat”, “Calendar”, “Setări profil” se aliniază vertical */
+  #menuForm,
+  #chatForm,
+  #eventForm,
+  #profileForm{
+    display:grid;
+    grid-template-columns:1fr;
+    gap:10px;
+  }
+
+  /* butoanele devin și ele pe rând separat */
+  #menuForm .btn,
+  #chatForm .btn,
+  #eventForm .btn,
+  #profileForm .btn{
+    grid-column:1 / -1;
+  }
+}
+  
 </style>
 </head>
 <body>
