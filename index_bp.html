@@ -445,7 +445,7 @@ input:invalid,textarea:invalid,select:invalid{border-color:var(--green) !importa
     <span class="ico"><svg viewBox="0 0 24 24"><path d="M4 5h16v10H7l-3 3V5z"/></svg></span>Chat
   </button>
   <button class="tablink" data-go="profile" type="button">
-    <span class="ico"><svg viewBox="0 0 24 24"><path d="M12 12a5 5 0 1 0-5-5 5 5 0 0 0 5 5Zm0 2c-5 0-9 2.5-9 5v1h18v-1c0-2.5-4-9-5Z"/></svg></span>Profil
+    <span class="ico"><svg viewBox="0 0 24 24"><path d="M12 12a5 5 0 1 0-5-5 5 5 0 0 0 5 5Zm0 2c-5 0-9 2.5-9 5v1h18v-1c0-2.5-4-5-9-5Z"/></svg></span>Profil
   </button>
 </nav>
 
@@ -533,7 +533,6 @@ function showRoute(name){
   }
 
   if(currentRoute==='dashboard') renderDashboard();
-  if(currentRoute==='profile') renderProfile?.();
 
   $$('.tablink').forEach(b=>b.classList.toggle('active', b.dataset.go===currentRoute));
   toggleHeaderButtons();
